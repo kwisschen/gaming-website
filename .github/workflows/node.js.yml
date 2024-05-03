@@ -1,4 +1,4 @@
-name: GameGrapes Gatsby CI
+name: RankedByGamers Gatsby Project
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Deploy GameGrapes to Netlify
+      - name: Deploy RankedByGamers to Netlify
         uses: actions/setup-node@v4
         with:
           node-version: latest
