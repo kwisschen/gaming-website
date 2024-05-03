@@ -5,8 +5,6 @@ import Layout from "../components/layout"
 const GamePage = ({ data }) => {
   const { game } = data;
 
-  console.log("Game platforms: ", game.platforms);
-
   return (
     <Layout>
       <div>
