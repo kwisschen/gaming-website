@@ -1,25 +1,28 @@
-import React from "react"
-import { graphql, Link } from "gatsby"
-import Layout from "../components/layout"
+import React from "react";
+import { graphql, Link } from "gatsby";
+import Layout from "../components/layout";
+import * as styles from '../styles/genre.module.css';
 
 export default function GenresPage({ data }) {
-  const { allGenre } = data
+  const { allGenre } = data;
 
   return (
     <Layout>
-      <h1>Highest-Rated Games of All Time</h1>
-      <h2>Top 500 games sorted by Genre</h2>
-      <ul>
+      <h1>Top 1000 Games of All Time</h1>
+      <h2>Sorted by genre</h2>
+      <div className={styles.cardContainer}>
         {allGenre.nodes.map(genre => (
-          <li key={genre.id}>
-            <Link to={`/genre/${genre.slug}/`}>
-              {genre.name} ({genre.gamesCount})
-            </Link>
-          </li>
+          <Link to={`/genre/${genre.slug}/`} className={styles.genreCard} key={genre.id}>
+            <div className={styles.genreImage}></div> {/* Placeholder for genre image */}
+            <div>
+              <div className={styles.genreText}>{genre.name}</div>
+              <span className={styles.genreCount}>{genre.gamesCount} Games</span>
+            </div>
+          </Link>
         ))}
-      </ul>
+      </div>
     </Layout>
-  )
+  );
 }
 
 export const query = graphql`
@@ -33,4 +36,4 @@ export const query = graphql`
       }
     }
   }
-`
+`;

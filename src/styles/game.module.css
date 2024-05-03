@@ -1,0 +1,42 @@
+.gameContainer {
+    display: flex;
+    align-items: start;
+    gap: 40px; /* Gap between image and details */
+    padding: 30px;
+  }
+  
+  .gameMedia {
+    flex: 1;
+    min-width: 300px; /* Adjust later */
+  }
+  
+  .gameCover {
+    margin-top: 2rem;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+  .gameDetails {
+    flex: 2;
+    padding: 10px;
+  }
+  
+  h1, h3, p {
+    margin: 0.5em 0;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  a {
+    color: #0077cc; /* Example link color */
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  

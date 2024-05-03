@@ -45,8 +45,8 @@ const IndexPage = () => {
   return (
     <Layout>
       <div className={styles.heroSection}>
-        <h1>Welcome to <span>Game Grapes</span>!</h1>
-        <p>Your ultimate guide to the gaming world.</p>
+        <h1>This is <span>RBG</span>.</h1>
+        <p>The best games ranked by gamers, for gamers.</p>
         <br />
         <Link to="/genres" className={styles.exploreButton}>Explore Games</Link>
       </div>

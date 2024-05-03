@@ -1,8 +1,9 @@
 .heroSection {
   text-align: center;
   padding: 50px 20px;
-  background-color: #123456;
+  background-color: #1f2533;
   color: #ffffff;
+  border-radius: 10px;
 }
 
 .heroSection h1 {
@@ -17,20 +18,26 @@
 }
 
 .exploreButton {
-  background-color: #ffdd00;
+  background-image: linear-gradient(to right, #ffdd00 0%, #ffee77 51%, #ffdd00 100%);
+  background-size: 200% auto;
   color: #123456;
   padding: 15px 30px;
   border: none;
   border-radius: 5px;
-  text-decoration: none;
+  text-decoration: none; /* Ensures no underline on text */
   font-weight: bold;
-  font-size: 1.2rem;
-  transition: background-color 0.3s;
+  font-size: 1.3rem;
+  transition: background-position 0.5s, transform 0.3s ease, box-shadow 0.3s ease;
+  display: inline-block; /* Ensures that transform applies correctly */
+  cursor: pointer;
+  box-shadow: 0 0 20px #ffee77;
 }
 
 .exploreButton:hover {
-  background-color: #ffee77;
-  text-decoration: none;
+  background-position: right center; /* Changes the background position on hover */
+  transform: translateY(-5px); /* Move button up on hover */
+  box-shadow: 0 0 20px #ffdd00; /* Enhanced shadow to give a glowing effect */
+  text-decoration: none; /* Ensure no underline on hover */
 }
 
 .featuredGames {
@@ -68,8 +75,10 @@
   text-align: center;
   padding: 20px;
   margin-top: 40px;
-  background-color: #2c3e50;
+  margin-bottom: 20px;
+  background-color: #1f2533;
   color: #ecf0f1;
+  border-radius: 10px;
 }
 
 .newsletterForm h2 {
@@ -98,7 +107,7 @@
 }
 
 .newsletterForm input:focus {
-  border-color: #3498db; /* Light blue focus */
+  border-color: #3498db;
 }
 
 .formButtons button {

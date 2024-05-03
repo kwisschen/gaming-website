@@ -1,11 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 :root {
-    --primary-color: #1d3557; /* Dark blue */
+    --primary-color: #1a1f2b; /* Bluish Black */
     --secondary-color: #e63946; /* Vibrant red */
-    --accent-color: #f4a261; /* Soft orange */
+    --accent-color: #f1faee; /* Soft orange */
     --text-light: #f1faee; /* Light cream */
-    --background-color: #2b2d42; /* Deep dark */
+    --background-color: #e69554; /* Soft orange */
+    --header-color: #f4a261; /* Soft orange */
     --header-height: 80px; /* Header height for consistency */
 }
 
@@ -34,23 +35,23 @@ main {
 
 .header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start; /* Align items to the start */
     align-items: center;
     padding: 1rem 0;
     background-color: var(--primary-color);
     height: var(--header-height);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     position: fixed;
     width: 100%;
     top: 0;
     z-index: 1000;
-    animation: slideDown 0.5s ease-out forwards;
+    animation: slideDown 1s ease-out forwards;
 }
 
 @keyframes slideDown {
     from {
         opacity: 0;
-        transform: translateY(-100%);
+        transform: translateY(-10%);
     }
     to {
         opacity: 1;
@@ -59,44 +60,66 @@ main {
 }
 
 .siteTitle {
-    color: var(--accent-color);
+    color: var(--header-color);
     font-size: 2.5rem;
     animation: fadeIn 1s ease-out;
-    margin-left: 2rem;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.siteTitle a:hover {
+    margin: auto 2rem;
     text-decoration: none;
 }
 
+@keyframes fadeIn {
+    0% { opacity: 0; transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.siteTitle:hover {
+    text-decoration: none;
+    color: #ffee77;
+    transition: color 0.3s ease;
+}
+
 .navLinks {
+    margin-top: 1.5rem;
     display: flex;
     list-style: none;
     align-items: center;
-    margin-right: 2rem;
 }
 
 .navLinkItem {
     margin-left: 20px;
     position: relative;
+    overflow: hidden; /* Ensure pseudo-elements do not go outside the bounds */
 }
 
 .navLinkItem a {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     color: var(--text-light);
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    display: block; /* To make the padding clickable and increases area for interaction */
     padding: 10px 0;
+    position: relative; /* Required for absolute positioning of pseudo-elements */
+}
+
+.navLinkItem a::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--secondary-color);
+    transform: scaleX(0);
+    transition: transform 0.3s ease-out;
+}
+
+.navLinkItem a:hover::before {
+    transform: scaleX(1); /* Scale the pseudo-element to full width */
 }
 
 .navLinkItem a:hover {
-    color: var(--secondary-color);
-    background-size: 100% 2px;
+    color: var(--secondary-color); /* Changes text color on hover */
+    text-decoration: none;
 }
 
 .siteFooter {
@@ -109,18 +132,22 @@ main {
 }
 
 .content {
-    margin-top: var(--header-height); /* Adjust for fixed header */
+    margin-top: var(--header-height);
     padding-top: 20px;
     animation: contentFadeIn 1s ease-out;
 }
 
 @keyframes contentFadeIn {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(15px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
 h1, h2, h3, h4, h5, h6 {
     color: var(--secondary-color);
+}
+
+main h1 {
+    margin-top: 3rem;
 }
 
 p, li {
@@ -133,20 +160,17 @@ a {
     text-decoration: none;
 }
 
-a:hover {
-    text-decoration: underline;
-}
-
 button {
     background-color: var(--secondary-color);
     color: var(--text-light);
     border: none;
     padding: 10px 20px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease;
     border-radius: 4px;
 }
 
 button:hover {
     background-color: var(--accent-color);
+    transform: scale(1.05);
 }

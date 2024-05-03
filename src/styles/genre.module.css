@@ -1,0 +1,49 @@
+.cardContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 30px;
+    padding: 20px;
+}
+
+.genreCard, .gameCard {
+    background-color: var(--primary-color);
+    border-radius: 10px;
+    padding: 20px;
+    color: var(--text-light);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    display: block; /* Ensure the link covers the entire card */
+    text-decoration: none; /* Remove underline from links */
+}
+
+.genreCard:hover, .gameCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.5);
+}
+
+.genreText, .gameText {
+    z-index: 2;
+    position: relative;
+    font-size: 1.5rem;
+    color: var(--text-light);
+    margin-bottom: 10px; /* Space between text and count/rating */
+}
+
+.genreCount, .gameRating {
+    z-index: 2;
+    position: relative;
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+    display: block; /* Ensure it starts on a new line */
+}
+
+.genreImage, .gameImage {
+    background-color: var(--accent-color); /* Placeholder color */
+    height: 150px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    width: 100%; /* Ensure the image covers the card width */
+    object-fit: cover; /* Ensure the image covers the defined height/width without distortion */
+}
