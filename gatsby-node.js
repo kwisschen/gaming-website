@@ -55,7 +55,7 @@ exports.sourceNodes = async ({ actions, createContentDigest, createNodeId }) => 
   //console.log("Genres fetched:", genres);
   const games = await fetchIGDBData('games', "fields name, rating, genres, cover.url, summary, first_release_date, platforms, url; where rating >= 60; sort rating desc; limit 500;");
   //console.log("Games fetched:", games);
-  console.log("Games fetched:", games.map(game => ({ name: game.name, platforms: game.platforms })));
+  //console.log("Games fetched:", games.map(game => ({ name: game.name, platforms: game.platforms })));
 
   // Extract all platform IDs from games
   const platformIds = new Set();
@@ -71,7 +71,7 @@ exports.sourceNodes = async ({ actions, createContentDigest, createNodeId }) => 
     map[platform.id] = platform.name;
     return map;
   }, {});
-  console.log("Missing Platform IDs:", Array.from(platformIds).filter(id => !platformMap[id]));
+  //console.log("Missing Platform IDs:", Array.from(platformIds).filter(id => !platformMap[id]));
 
 
   // Initialize an object to keep track of games count per genre

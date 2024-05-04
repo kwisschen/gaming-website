@@ -15,7 +15,7 @@
     position: relative;
     overflow: hidden;
     display: block; /* Ensure the link covers the entire card */
-    text-decoration: none; /* Remove underline from links */
+    text-decoration: none;
 }
 
 .genreCard:hover, .gameCard:hover {
@@ -46,4 +46,5 @@
     margin-bottom: 15px;
     width: 100%; /* Ensure the image covers the card width */
     object-fit: cover; /* Ensure the image covers the defined height/width without distortion */
+    object-position: center center; /* Center the image */
 }

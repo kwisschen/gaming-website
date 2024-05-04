@@ -11,7 +11,7 @@
   }
   
   .gameCover {
-    margin-top: 2rem;
+    margin-top: 2.5rem;
     width: 100%;
     height: auto;
     object-fit: cover;
@@ -33,7 +33,7 @@
   }
   
   a {
-    color: #0077cc; /* Example link color */
+    color: #0077cc;
   }
   
   a:hover {

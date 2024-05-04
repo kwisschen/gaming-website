@@ -7,11 +7,11 @@ const AboutPage = () => {
     <Layout>
       <Seo title="About" />
       <div className="content">
-        <h1>About Game Grapes</h1>
-        <p>Welcome to Game Grapes, your ultimate guide to the gaming world!</p>
+        <h1>About RankedByGamers</h1>
+        <p>Welcome to your ultimate guide to the gaming world!</p>
         <p>
-          At Game Grapes, we are passionate about gaming and strive to provide
-          you with information on the highest-rated games of all time.
+          At RankedByGamers, we are passionate about gaming and strive to provide
+          you with the latest information on the highest-rated games.
         </p>
         <p>
           Our mission is to help you discover new and exciting games to play,
