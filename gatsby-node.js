@@ -9,16 +9,16 @@ const HEADERS = {
   'Authorization': `Bearer ${process.env.IGDB_ACCESS_TOKEN}`,
 };
 
-// Added helper function to convert image URLs to high resolution according to IGDB docs
-function convertCoverUrl(url, size = 't_1080p') {
+// Convert IGDB image URLs to specified resolution
+function convertImageUrl(url, size = 't_720p') {
   if (!url) return '';
   const baseUrl = url.startsWith('http') ? '' : 'https:';
   return `${baseUrl}${url.replace('t_thumb', size)}`;
 }
 
-// Added helper function to fetch platform names by IDs
+// Fetch platform names by IDs
 async function fetchPlatforms(platformIds) {
-  const chunkSize = 10; // Needs to be a smaller number or IDs will go missing ('10' is the default item limit for IGDB)
+  const chunkSize = 10;
   const platformData = [];
   for (let i = 0; i < platformIds.length; i += chunkSize) {
     const chunk = platformIds.slice(i, i + chunkSize);
@@ -33,13 +33,29 @@ async function fetchPlatforms(platformIds) {
   return platformData;
 }
 
+// Fetch screenshots by IDs
+async function fetchScreenshots(screenshotIds) {
+  const chunkSize = 10;
+  const screenshotData = [];
+  for (let i = 0; i < screenshotIds.length; i += chunkSize) {
+    const chunk = screenshotIds.slice(i, i + chunkSize);
+    const query = `fields url; where id = (${chunk.join(',')});`;
+    try {
+      const response = await fetchIGDBData('screenshots', query);
+      screenshotData.push(...response);
+    } catch (error) {
+      console.error("Failed to fetch screenshots for chunk:", chunk, error);
+    }
+  }
+  return screenshotData;
+}
+
 async function fetchIGDBData(endpoint, query) {
   const response = await fetch(`${IGDB_API_URL}/${endpoint}`, {
     method: 'POST',
     headers: HEADERS,
     body: query,
   });
-  console.log(response);
   if (!response.ok) {
     const message = await response.text();
     throw new Error(`Failed to fetch from IGDB: ${response.status} ${response.statusText} - ${message}`);
@@ -52,16 +68,20 @@ exports.sourceNodes = async ({ actions, createContentDigest, createNodeId }) => 
 
   // Fetch data from IGDB
   const genres = await fetchIGDBData('genres', "fields name; limit 50;");
-  //console.log("Genres fetched:", genres);
-  const games = await fetchIGDBData('games', "fields name, rating, genres, cover.url, summary, first_release_date, platforms, url; where rating >= 60; sort rating desc; limit 500;");
-  //console.log("Games fetched:", games);
-  //console.log("Games fetched:", games.map(game => ({ name: game.name, platforms: game.platforms })));
+  const games = await fetchIGDBData('games', `fields name, rating, genres, cover.url, summary, first_release_date, platforms, url, screenshots;
+    where rating >= 60;
+    sort rating desc;
+    limit 500;`);
 
   // Extract all platform IDs from games
   const platformIds = new Set();
+  const screenshotIds = new Set();
   games.forEach(game => {
     if (game.platforms) {
       game.platforms.forEach(platformId => platformIds.add(platformId));
+    }
+    if (game.screenshots) {
+      game.screenshots.slice(0, 3).forEach(screenshotId => screenshotIds.add(screenshotId));
     }
   });
 
@@ -71,17 +91,20 @@ exports.sourceNodes = async ({ actions, createContentDigest, createNodeId }) => 
     map[platform.id] = platform.name;
     return map;
   }, {});
-  //console.log("Missing Platform IDs:", Array.from(platformIds).filter(id => !platformMap[id]));
 
+  // Fetch screenshot details
+  const screenshots = await fetchScreenshots(Array.from(screenshotIds));
+  const screenshotMap = screenshots.reduce((map, screenshot) => {
+    map[screenshot.id] = convertImageUrl(screenshot.url);
+    return map;
+  }, {});
 
   // Initialize an object to keep track of games count per genre
   const genreGamesCount = {};
   // Iterate over games to count the number of games per genre
   games.forEach(game => {
-    // Ensure game.genres exists before iterating over it
     if (game.genres) {
       game.genres.forEach(genreId => {
-        // If the genreId does not exist in the object, initialize it with 1, else increment the count
         genreGamesCount[genreId] = (genreGamesCount[genreId] || 0) + 1;
       });
     }
@@ -105,17 +128,18 @@ exports.sourceNodes = async ({ actions, createContentDigest, createNodeId }) => 
   // Create nodes for games, linking to genres by ID
   games.forEach(game => {
     const gameSlug = game.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    // Check if game.genres exists before mapping over it
     const genreNodeIds = game.genres ? game.genres.map(genreId => createNodeId(`Genre-${genreId}`)) : [];
-    
+    const screenshots = game.screenshots ? game.screenshots.slice(0, 3).map(screenshotId => screenshotMap[screenshotId]) : [];
+
     createNode({
       ...game,
       slug: gameSlug,
-      coverUrl: convertCoverUrl(game.cover?.url), // Adjusted to use high-resolution images
-      firstReleaseDate: game.first_release_date ? new Date(game.first_release_date * 1000) : null, // Handle any missing date
-      platforms: game.platforms ? game.platforms.map(platformId => platformMap[platformId] || 'Unknown') : [], // Map and handle missing platforms
-      url: game.url ? game.url : "", // Handle any missing URL
+      coverUrl: convertImageUrl(game.cover?.url),
+      firstReleaseDate: game.first_release_date ? new Date(game.first_release_date * 1000) : null,
+      platforms: game.platforms ? game.platforms.map(platformId => platformMap[platformId] || 'Unknown') : [],
+      url: game.url ? game.url : "",
       genres: genreNodeIds,
+      screenshots,
       id: createNodeId(`Game-${game.id}`),
       internal: {
         type: "Game",
@@ -184,6 +208,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       platforms: [String]
       url: String
       genres: [Genre] @link(by: "id")
+      screenshots: [String]
     }
     type Genre implements Node @dontInfer {
       genreId: String!

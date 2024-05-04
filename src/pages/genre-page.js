@@ -8,7 +8,9 @@ const GenrePage = ({ data, pageContext }) => {
 
   return (
     <Layout>
-      <h1>Games in Genre: {pageContext.genreName}</h1>
+      <div className={styles.headingContainer}>
+        <h1>Games in Genre {pageContext.genreName}</h1>
+      </div>      
       <div className={styles.cardContainer}>
         {games.map(game => (
           <Link to={`/game/${game.slug}/`} key={game.id} className={styles.gameCard}>

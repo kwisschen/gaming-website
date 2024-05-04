@@ -46,7 +46,7 @@ const IndexPage = () => {
     <Layout>
       <div className={styles.heroSection}>
         <h1>This is <span>RBG</span>.</h1>
-        <p>The best games ranked by gamers, for gamers.</p>
+        <p>Best-quality games ranked by gamers, for gamers.</p>
         <br />
         <Link to="/genres" className={styles.exploreButton}>Explore Games</Link>
       </div>
@@ -78,7 +78,7 @@ const IndexPage = () => {
         >
           <input type="hidden" name="form-name" value="Data Collection Form" />
           <label>
-            Name:
+            Name
             <input
               type="text"
               name="name"
@@ -87,7 +87,7 @@ const IndexPage = () => {
             />
           </label>
           <label>
-            Email:
+            Email
             <input
               type="email"
               name="email"

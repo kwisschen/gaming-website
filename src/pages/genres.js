@@ -15,8 +15,10 @@ export default function GenresPage({ data }) {
 
   return (
     <Layout>
-      <h1>Top 1000 Games of All Time</h1>
-      <h2>Sorted by genre</h2>
+      <div className={styles.headingContainer}>
+        <h1>Top 1000 Games of All Time</h1>
+        <h2>Sorted by Genre</h2>
+      </div>
       <div className={styles.cardContainer}>
         {allGenre.nodes.map(genre => {
           // Generate the image file name
