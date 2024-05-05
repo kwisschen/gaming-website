@@ -1,4 +1,3 @@
-// gatsby-node.js
 const fetch = require("node-fetch");
 require("dotenv").config();
 const path = require("path");
@@ -17,94 +16,83 @@ function convertImageUrl(url, size = 't_720p') {
   return `${baseUrl}${url.replace('t_thumb', size)}`;
 }
 
-// Fetch platform names by IDs
-async function fetchPlatforms(platformIds) {
-  const chunkSize = 10;
-  const platformData = [];
-  for (let i = 0; i < platformIds.length; i += chunkSize) {
-    const chunk = platformIds.slice(i, i + chunkSize);
-    const query = `fields name; where id = (${chunk.join(',')});`;
+// Fetch data from IGDB with retry mechanism
+async function fetchIGDBDataWithRetry(endpoint, query, retryCount = 2, retryDelay = 1000) {
+  let response;
+  for (let attempt = 0; attempt < retryCount; attempt++) {
+    response = await fetch(`${IGDB_API_URL}/${endpoint}`, {
+      method: 'POST',
+      headers: HEADERS,
+      body: query,
+    });
+    if (response.ok) {
+      return await response.json();
+    }
+    if (response.status !== 429) {
+      // If not a "Too Many Requests" error, break the retry loop
+      break;
+    }
+    // Wait before retrying
+    await new Promise(resolve => setTimeout(resolve, retryDelay));
+  }
+  const message = await response.text();
+  throw new Error(`Failed to fetch from IGDB: ${response.status} ${response.statusText} - ${message}`);
+}
+
+// Fetch data in chunks
+async function fetchDataInChunks(fetchFunction, ids, chunkSize = 10) {
+  const data = [];
+  for (let i = 0; i < ids.length; i += chunkSize) {
+    const chunk = ids.slice(i, i + chunkSize);
     try {
-      const response = await fetchIGDBData('platforms', query);
-      platformData.push(...response);
+      const response = await fetchFunction(chunk);
+      data.push(...response);
     } catch (error) {
-      console.error("Failed to fetch platforms for chunk:", chunk, error);
+      console.error("Failed to fetch data for chunk:", chunk, error);
     }
   }
-  return platformData;
+  return data;
+}
+
+// Fetch platform names by IDs
+async function fetchPlatforms(platformIds) {
+  return fetchDataInChunks(
+    chunk => fetchIGDBDataWithRetry('platforms', `fields name; where id = (${chunk.join(',')});`),
+    platformIds
+  );
 }
 
 // Fetch language supports by IDs
 async function fetchLanguageSupports(languageSupportIds) {
-  const chunkSize = 10;
-  const languageSupportData = [];
-  for (let i = 0; i < languageSupportIds.length; i += chunkSize) {
-    const chunk = languageSupportIds.slice(i, i + chunkSize);
-    const query = `fields game,language; where id = (${chunk.join(',')});`;
-    try {
-      const response = await fetchIGDBData('language_supports', query);
-      languageSupportData.push(...response);
-    } catch (error) {
-      console.error("Failed to fetch language supports for chunk:", chunk, error);
-    }
-  }
-  return languageSupportData;
+  return fetchDataInChunks(
+    chunk => fetchIGDBDataWithRetry('language_supports', `fields game,language; where id = (${chunk.join(',')});`),
+    languageSupportIds
+  );
 }
 
 // Fetch languages by IDs
 async function fetchLanguages(languageIds) {
-  const chunkSize = 10;
-  const languageData = [];
-  for (let i = 0; i < languageIds.length; i += chunkSize) {
-    const chunk = languageIds.slice(i, i + chunkSize);
-    const query = `fields name; where id = (${chunk.join(',')});`;
-    try {
-      const response = await fetchIGDBData('languages', query);
-      languageData.push(...response);
-    } catch (error) {
-      console.error("Failed to fetch languages for chunk:", chunk, error);
-    }
-  }
-  return languageData;
+  return fetchDataInChunks(
+    chunk => fetchIGDBDataWithRetry('languages', `fields name; where id = (${chunk.join(',')});`),
+    languageIds
+  );
 }
 
 // Fetch screenshots by IDs
 async function fetchScreenshots(screenshotIds) {
-  const chunkSize = 10;
-  const screenshotData = [];
-  for (let i = 0; i < screenshotIds.length; i += chunkSize) {
-    const chunk = screenshotIds.slice(i, i + chunkSize);
-    const query = `fields url; where id = (${chunk.join(',')});`;
-    try {
-      const response = await fetchIGDBData('screenshots', query);
-      screenshotData.push(...response);
-    } catch (error) {
-      console.error("Failed to fetch screenshots for chunk:", chunk, error);
-    }
-  }
-  return screenshotData;
-}
-
-async function fetchIGDBData(endpoint, query) {
-  const response = await fetch(`${IGDB_API_URL}/${endpoint}`, {
-    method: 'POST',
-    headers: HEADERS,
-    body: query,
-  });
-  if (!response.ok) {
-    const message = await response.text();
-    throw new Error(`Failed to fetch from IGDB: ${response.status} ${response.statusText} - ${message}`);
-  }
-  return response.json();
+  return fetchDataInChunks(
+    chunk => fetchIGDBDataWithRetry('screenshots', `fields url; where id = (${chunk.join(',')});`),
+    screenshotIds
+  );
 }
 
 exports.sourceNodes = async ({ actions, createContentDigest, createNodeId }) => {
   const { createNode } = actions;
 
   // Fetch data from IGDB
-  const genres = await fetchIGDBData('genres', "fields name; limit 50;");
-  const games = await fetchIGDBData('games', `fields name, rating, genres, cover.url, summary, first_release_date, platforms, url, screenshots, language_supports;
-    where rating >= 60;
+  const genres = await fetchIGDBDataWithRetry('genres', "fields name; limit 50;");
+  const games = await fetchIGDBDataWithRetry('games', `fields name, rating, genres, cover.url, summary, first_release_date, platforms, url, screenshots, language_supports;
+    where rating >= 90;
     sort rating desc;
     limit 500;`);
 
@@ -189,11 +177,6 @@ exports.sourceNodes = async ({ actions, createContentDigest, createNodeId }) => 
     const screenshots = game.screenshots ? game.screenshots.slice(0, 3).map(screenshotId => screenshotMap[screenshotId]) : [];
     const languageSupports = languageSupportMap[game.id] || new Set();
     const supportedLanguages = Array.from(languageSupports).map(languageId => languageMap[languageId] || "Unknown");
-
-    // Add a default supported language (English) if none are specified
-    // if (supportedLanguages.length === 0) {
-    //   supportedLanguages.push("English");
-    // }
 
     createNode({
       ...game,
@@ -286,5 +269,5 @@ exports.createSchemaCustomization = ({ actions }) => {
 };
 
 if (process.env.NODE_ENV === 'test') {
-  exports.fetchIGDBData = fetchIGDBData;
+  exports.fetchIGDBData = fetchIGDBDataWithRetry;
 }

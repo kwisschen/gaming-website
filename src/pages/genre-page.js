@@ -40,7 +40,7 @@ export const query = graphql`
   query GenreGamesQuery($genreId: String = "") {
     allGame(
       filter: { genres: { elemMatch: { id: { eq: $genreId } } } }
-      sort: { fields: rating, order: DESC }
+      sort: {rating: DESC}
     ) {
       nodes {
         id
