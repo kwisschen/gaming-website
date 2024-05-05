@@ -6,6 +6,7 @@ import * as styles from '../styles/game.module.css';
 const GamePage = ({ data }) => {
     const { game } = data;
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [isModalOpen, setModalOpen] = useState(false);
 
     const nextSlide = () => {
         setCurrentIndex((currentIndex + 1) % game.screenshots.length);
@@ -13,6 +14,14 @@ const GamePage = ({ data }) => {
 
     const prevSlide = () => {
         setCurrentIndex((currentIndex - 1 + game.screenshots.length) % game.screenshots.length);
+    };
+
+    const openModal = () => {
+        setModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setModalOpen(false);
     };
 
     return (
@@ -40,6 +49,8 @@ const GamePage = ({ data }) => {
                                 {game.platforms && game.platforms.length > 0 ? (
                                     <ul>{game.platforms.map(platform => <li key={platform}>{platform}</li>)}</ul>
                                 ) : <p>Not available</p>}
+                                <h3>Supported Languages:</h3>
+                                <p>{game.supportedLanguages && game.supportedLanguages.length > 0 ? game.supportedLanguages.join(', ') : "None specified"}</p>
                                 <h3>Description:</h3>
                                 <p>{game.summary || "No description available."}</p>
                                 <p>More information at: {game.url ? <a href={game.url} target="_blank" rel="noopener noreferrer">{game.url}</a> : "Not available"}</p>
@@ -56,10 +67,23 @@ const GamePage = ({ data }) => {
                                         src={game.screenshots[currentIndex]}
                                         alt={`Screenshot ${currentIndex + 1}`}
                                         className={styles.screenshot}
+                                        onClick={openModal}
                                     />
                                     <button className={styles.carouselArrow} onClick={nextSlide}>
                                         &#9654;
                                     </button>
+                                </div>
+
+                                {/* Modal for enlarged screenshot */}
+                                <div className={`${styles.modal} ${isModalOpen ? styles.open : ''}`}>
+                                    <div class={styles.modalContent}>
+                                        <span class={styles.close} onClick={closeModal}>&times;</span>
+                                        <img
+                                            src={game.screenshots[currentIndex]}
+                                            alt={`Screenshot ${currentIndex + 1}`}
+                                            style={{ width: "100%", height: "100%" }}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -82,6 +106,7 @@ export const query = graphql`
       platforms
       url
       screenshots
+      supportedLanguages
     }
   }
 `;

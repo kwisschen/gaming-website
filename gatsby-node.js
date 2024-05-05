@@ -1,3 +1,4 @@
+// gatsby-node.js
 const fetch = require("node-fetch");
 require("dotenv").config();
 const path = require("path");
@@ -31,6 +32,40 @@ async function fetchPlatforms(platformIds) {
     }
   }
   return platformData;
+}
+
+// Fetch language supports by IDs
+async function fetchLanguageSupports(languageSupportIds) {
+  const chunkSize = 10;
+  const languageSupportData = [];
+  for (let i = 0; i < languageSupportIds.length; i += chunkSize) {
+    const chunk = languageSupportIds.slice(i, i + chunkSize);
+    const query = `fields game,language; where id = (${chunk.join(',')});`;
+    try {
+      const response = await fetchIGDBData('language_supports', query);
+      languageSupportData.push(...response);
+    } catch (error) {
+      console.error("Failed to fetch language supports for chunk:", chunk, error);
+    }
+  }
+  return languageSupportData;
+}
+
+// Fetch languages by IDs
+async function fetchLanguages(languageIds) {
+  const chunkSize = 10;
+  const languageData = [];
+  for (let i = 0; i < languageIds.length; i += chunkSize) {
+    const chunk = languageIds.slice(i, i + chunkSize);
+    const query = `fields name; where id = (${chunk.join(',')});`;
+    try {
+      const response = await fetchIGDBData('languages', query);
+      languageData.push(...response);
+    } catch (error) {
+      console.error("Failed to fetch languages for chunk:", chunk, error);
+    }
+  }
+  return languageData;
 }
 
 // Fetch screenshots by IDs
@@ -68,14 +103,15 @@ exports.sourceNodes = async ({ actions, createContentDigest, createNodeId }) => 
 
   // Fetch data from IGDB
   const genres = await fetchIGDBData('genres', "fields name; limit 50;");
-  const games = await fetchIGDBData('games', `fields name, rating, genres, cover.url, summary, first_release_date, platforms, url, screenshots;
+  const games = await fetchIGDBData('games', `fields name, rating, genres, cover.url, summary, first_release_date, platforms, url, screenshots, language_supports;
     where rating >= 60;
     sort rating desc;
     limit 500;`);
 
-  // Extract all platform IDs from games
+  // Extract all platform IDs and language support IDs from games
   const platformIds = new Set();
   const screenshotIds = new Set();
+  const languageSupportIds = new Set();
   games.forEach(game => {
     if (game.platforms) {
       game.platforms.forEach(platformId => platformIds.add(platformId));
@@ -83,12 +119,33 @@ exports.sourceNodes = async ({ actions, createContentDigest, createNodeId }) => 
     if (game.screenshots) {
       game.screenshots.slice(0, 3).forEach(screenshotId => screenshotIds.add(screenshotId));
     }
+    if (game.language_supports) {
+      game.language_supports.forEach(languageSupportId => languageSupportIds.add(languageSupportId));
+    }
   });
 
   // Fetch platform details
   const platforms = await fetchPlatforms(Array.from(platformIds));
   const platformMap = platforms.reduce((map, platform) => {
     map[platform.id] = platform.name;
+    return map;
+  }, {});
+
+  // Fetch language support details
+  const languageSupports = await fetchLanguageSupports(Array.from(languageSupportIds));
+  const languageSupportMap = languageSupports.reduce((map, languageSupport) => {
+    if (!map[languageSupport.game]) {
+      map[languageSupport.game] = new Set();
+    }
+    map[languageSupport.game].add(languageSupport.language);
+    return map;
+  }, {});
+
+  // Fetch languages details
+  const languageIds = Array.from(new Set(languageSupports.map(support => support.language)));
+  const languages = await fetchLanguages(languageIds);
+  const languageMap = languages.reduce((map, language) => {
+    map[language.id] = language.name;
     return map;
   }, {});
 
@@ -130,6 +187,13 @@ exports.sourceNodes = async ({ actions, createContentDigest, createNodeId }) => 
     const gameSlug = game.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     const genreNodeIds = game.genres ? game.genres.map(genreId => createNodeId(`Genre-${genreId}`)) : [];
     const screenshots = game.screenshots ? game.screenshots.slice(0, 3).map(screenshotId => screenshotMap[screenshotId]) : [];
+    const languageSupports = languageSupportMap[game.id] || new Set();
+    const supportedLanguages = Array.from(languageSupports).map(languageId => languageMap[languageId] || "Unknown");
+
+    // Add a default supported language (English) if none are specified
+    // if (supportedLanguages.length === 0) {
+    //   supportedLanguages.push("English");
+    // }
 
     createNode({
       ...game,
@@ -140,6 +204,7 @@ exports.sourceNodes = async ({ actions, createContentDigest, createNodeId }) => 
       url: game.url ? game.url : "",
       genres: genreNodeIds,
       screenshots,
+      supportedLanguages,
       id: createNodeId(`Game-${game.id}`),
       internal: {
         type: "Game",
@@ -209,6 +274,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       url: String
       genres: [Genre] @link(by: "id")
       screenshots: [String]
+      supportedLanguages: [String]
     }
     type Genre implements Node @dontInfer {
       genreId: String!

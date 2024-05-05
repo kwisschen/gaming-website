@@ -1,5 +1,5 @@
 Features to be added:
-1. Featured game on homepage
+1. Featured game in local language on homepage
 2. Screenshots on game page
 3. Rating bar on game page
 4. Deeper dynamic data function
