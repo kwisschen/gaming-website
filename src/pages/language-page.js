@@ -1,11 +1,11 @@
-// src/pages/genre-page.js
+// src/pages/language-page.js
 import React, { useLayoutEffect } from "react";
 import { graphql, Link } from "gatsby";
 import Layout from "../components/layout";
-import * as styles from '../styles/genre.module.css';
-import defaultImage from '../images/default.jpg';
+import * as styles from "../styles/genre.module.css";
+import defaultImage from "../images/default.jpg";
 
-const GenrePage = ({ data, pageContext }) => {
+const LanguagePage = ({ data, pageContext }) => {
   const { allGame: { nodes: games } } = data;
 
   // Attempt to make each visit scroll to top of page
@@ -22,10 +22,11 @@ const GenrePage = ({ data, pageContext }) => {
   return (
     <Layout>
       <div className={styles.headingContainer}>
-        <h1>Games in Genre {pageContext.genreName}</h1>
-      </div>      
+        <h1>Games Supporting Your Browser Language</h1>
+        <h2>{`Locale: ${pageContext.locale}`}</h2>
+      </div>
       <div className={styles.cardContainer}>
-        {games.map(game => (
+        {games.map((game) => (
           <Link to={`/game/${game.slug}/`} key={game.id} className={styles.gameCard}>
             <img
               src={game.coverUrl || defaultImage}
@@ -40,13 +41,13 @@ const GenrePage = ({ data, pageContext }) => {
       </div>
     </Layout>
   );
-}
+};
 
 export const query = graphql`
-  query GenreGamesQuery($genreId: String = "") {
+  query LanguageGamesQuery($locale: String = "") {
     allGame(
-      filter: { genres: { elemMatch: { id: { eq: $genreId } } } }
-      sort: {rating: DESC}
+      filter: { supportedLanguages: { elemMatch: { locale: { eq: $locale } } } }
+      sort: { rating: DESC }
     ) {
       nodes {
         id
@@ -59,4 +60,4 @@ export const query = graphql`
   }
 `;
 
-export default GenrePage;
+export default LanguagePage;

@@ -1,3 +1,4 @@
+// gatsby-node.js
 const fetch = require("node-fetch");
 require("dotenv").config();
 const path = require("path");
@@ -73,7 +74,7 @@ async function fetchLanguageSupports(languageSupportIds) {
 // Fetch languages by IDs
 async function fetchLanguages(languageIds) {
   return fetchDataInChunks(
-    chunk => fetchIGDBDataWithRetry('languages', `fields name; where id = (${chunk.join(',')});`),
+    chunk => fetchIGDBDataWithRetry('languages', `fields name,locale; where id = (${chunk.join(',')});`),
     languageIds
   );
 }
@@ -133,9 +134,9 @@ exports.sourceNodes = async ({ actions, createContentDigest, createNodeId }) => 
   const languageIds = Array.from(new Set(languageSupports.map(support => support.language)));
   const languages = await fetchLanguages(languageIds);
   const languageMap = languages.reduce((map, language) => {
-    map[language.id] = language.name;
+    map[language.id] = { name: language.name, locale: language.locale };
     return map;
-  }, {});
+}, {});
 
   // Fetch screenshot details
   const screenshots = await fetchScreenshots(Array.from(screenshotIds));
@@ -176,7 +177,10 @@ exports.sourceNodes = async ({ actions, createContentDigest, createNodeId }) => 
     const genreNodeIds = game.genres ? game.genres.map(genreId => createNodeId(`Genre-${genreId}`)) : [];
     const screenshots = game.screenshots ? game.screenshots.slice(0, 3).map(screenshotId => screenshotMap[screenshotId]) : [];
     const languageSupports = languageSupportMap[game.id] || new Set();
-    const supportedLanguages = Array.from(languageSupports).map(languageId => languageMap[languageId] || "Unknown");
+    const supportedLanguages = Array.from(languageSupports).map(languageId => {
+      const language = languageMap[languageId] || { name: "Unknown", locale: "" };
+      return { name: language.name, locale: language.locale };
+    });
 
     createNode({
       ...game,
@@ -200,6 +204,7 @@ exports.sourceNodes = async ({ actions, createContentDigest, createNodeId }) => 
 exports.createPages = async ({ graphql, actions }) => {
   const { createPage } = actions;
 
+  // Fetch genres
   const genresResult = await graphql(`
     {
       allGenre {
@@ -211,41 +216,75 @@ exports.createPages = async ({ graphql, actions }) => {
     }
   `);
 
-  genresResult.data.allGenre.nodes.forEach(genre => {
-    createPage({
-      path: `/genre/${genre.slug}/`,
-      component: path.resolve(`./src/pages/genre-page.js`),
-      context: {
-        genreId: genre.id,
-      },
+  // Create pages for genres
+  if (genresResult.data) {
+    genresResult.data.allGenre.nodes.forEach(genre => {
+      createPage({
+        path: `/genre/${genre.slug}/`,
+        component: path.resolve(`./src/pages/genre-page.js`),
+        context: {
+          genreId: genre.id,
+        },
+      });
     });
-  });
+  }
 
+  // Fetch games
   const gamesResult = await graphql(`
     {
       allGame {
         nodes {
           id
           slug
+          supportedLanguages {
+            locale
+          }
         }
       }
     }
   `);
 
-  gamesResult.data.allGame.nodes.forEach(game => {
-    createPage({
-      path: `/game/${game.slug}/`,
-      component: path.resolve(`./src/pages/game-page.js`),
-      context: {
-        gameId: game.id,
-      },
+  if (gamesResult.data) {
+    // Create game pages
+    gamesResult.data.allGame.nodes.forEach(game => {
+      createPage({
+        path: `/game/${game.slug}/`,
+        component: path.resolve(`./src/pages/game-page.js`),
+        context: {
+          gameId: game.id,
+        },
+      });
     });
-  });
+
+    // Create language pages
+    const uniqueLocales = new Set();
+
+    gamesResult.data.allGame.nodes.forEach(game => {
+      if (game.supportedLanguages) {
+        game.supportedLanguages.forEach(language => uniqueLocales.add(language.locale));
+      }
+    });
+
+    uniqueLocales.forEach(locale => {
+      createPage({
+        path: `/language/${locale}/`,
+        component: path.resolve(`./src/pages/language-page.js`),
+        context: {
+          locale: locale,
+        },
+      });
+    });
+  }
 };
 
 exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions;
   createTypes(`
+    type SupportedLanguage {
+      name: String!
+      locale: String!
+    }
+
     type Game implements Node @dontInfer {
       name: String!
       rating: Float
@@ -257,8 +296,9 @@ exports.createSchemaCustomization = ({ actions }) => {
       url: String
       genres: [Genre] @link(by: "id")
       screenshots: [String]
-      supportedLanguages: [String]
+      supportedLanguages: [SupportedLanguage]
     }
+
     type Genre implements Node @dontInfer {
       genreId: String!
       name: String!

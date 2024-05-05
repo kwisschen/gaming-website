@@ -1,3 +1,4 @@
+/* index.module.css */
 .heroSection {
   text-align: center;
   padding: 50px 20px;
@@ -102,6 +103,29 @@
   object-fit: cover; /* Ensure the image covers the defined height/width without distortion */
   object-position: center center; /* Center the image */
 }
+
+.languageButton {
+  background-image: linear-gradient(to right, #ffdd00 0%, #ffee77 51%, #ffdd00 100%);
+  background-size: 200% auto;
+  color: #123456;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.3rem;
+  transition: background-position 0.5s, transform 0.3s ease, box-shadow 0.3s ease;
+  display: inline-block;
+  cursor: pointer;
+  box-shadow: 0 0 20px #ffee77;
+  margin-top: 20px; /* Adjust the top margin as needed */
+  }
+  
+  .languageButton:hover {
+  background-position: right center;
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px #ffdd00;
+  }
 
 .newsletterForm {
   text-align: center;

@@ -7,28 +7,45 @@ import * as styles from "../styles/index.module.css";
 const IndexPage = ({ data }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const formRef = useRef(null);  // Reference to the form
+  const formRef = useRef(null);
   const [featuredGame, setFeaturedGame] = useState(null);
+  const [languageUrl, setLanguageUrl] = useState(null);
+  const [headerText, setHeaderText] = useState("Featured Game");
 
   useEffect(() => {
-    // Fetch the user's preferred language (replace with actual logic)
-    const userPreferredLanguage = "English"; // Replace with actual logic
-    
+    let userLocale = navigator.language || navigator.languages[0];
+
+    // Handle specific cases for users using just "English" and "Chinese" as their Preferred Language in browser
+    if (userLocale === "en") {
+        userLocale = "en-US"; // mapping to "English (United States)"
+    } else if (userLocale === "zh") {
+        userLocale = "zh-CN"; // mapping to "Chinese (Simplified)"
+    }
+
     // Filter games that support the user's preferred language
-    const games = data.allGame.nodes.filter(game =>
-      game.supportedLanguages.includes(userPreferredLanguage)
+    const localeGames = data.allGame.nodes.filter(game =>
+      game.supportedLanguages.some(lang => lang.locale === userLocale)
     );
 
-    // Randomly select one of the filtered games
-    if (games.length > 0) {
-      const randomIndex = Math.floor(Math.random() * games.length);
-      setFeaturedGame(games[randomIndex]);
+    // Randomly select one of the locale-supported games as the featured game
+    if (localeGames.length > 0) {
+      setLanguageUrl(`/language/${userLocale}/`);
+      setHeaderText("Featured game in YOUR language");
+      const randomIndex = Math.floor(Math.random() * localeGames.length);
+      setFeaturedGame(localeGames[randomIndex]);
+    } else {
+      // Randomly select one of all games as the featured game
+      const allGames = data.allGame.nodes;
+      const randomIndex = Math.floor(Math.random() * allGames.length);
+      setFeaturedGame(allGames[randomIndex]);
+      setLanguageUrl(null);
+      setHeaderText("Featured Game");
     }
   }, [data]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const formData = new FormData(formRef.current);  // Access form data wit useRef
+    const formData = new FormData(formRef.current);
     const encData = new URLSearchParams(formData).toString();
 
     try {
@@ -41,13 +58,13 @@ const IndexPage = ({ data }) => {
       });
 
       if (response.ok) {
-        formRef.current.reset();  // Reset the form using the ref
-        navigate("/confirm-page");  // Navigate on successful submission
+        formRef.current.reset();
+        navigate("/confirm-page");
       } else {
-        throw new Error('Network response was not ok.');
+        throw new Error("Network response was not ok.");
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
       alert(`Submission error: ${error}`);
     }
   };
@@ -69,7 +86,7 @@ const IndexPage = ({ data }) => {
 
       {featuredGame && (
         <div className={styles.featuredGames}>
-          <h2>Featured game in YOUR language</h2>
+          <h2>{headerText}</h2>
           <div className={styles.cardContainer}>
             <Link to={`/game/${featuredGame.slug}/`} className={styles.gameCard}>
               <img src={featuredGame.coverUrl || '../images/default.jpg'} alt={`Cover for ${featuredGame.name}`} className={styles.gameImage} />
@@ -77,6 +94,12 @@ const IndexPage = ({ data }) => {
               <div className={styles.gameRating}>Rating: {featuredGame.rating ? featuredGame.rating.toFixed(1) : "N/A"}</div>
             </Link>
           </div>
+
+          {languageUrl && (
+            <Link to={languageUrl} className={styles.languageButton}>
+              Games in Your Language
+            </Link>
+          )}
         </div>
       )}
 
@@ -104,7 +127,6 @@ const IndexPage = ({ data }) => {
             <input
               type="email"
               name="email"
-              value={email}
               onChange={e => setEmail(e.target.value)}
             />
           </label>
@@ -129,7 +151,9 @@ export const query = graphql`
         rating
         slug
         coverUrl
-        supportedLanguages
+        supportedLanguages {
+          locale
+        }
       }
     }
   }
