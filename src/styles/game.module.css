@@ -42,13 +42,13 @@
 }
 
 .carouselContainer {
-  width: 100%;
-  max-width: 600px;
   margin-top: 20px;
-  align-self: center;
   display: flex;
   flex-direction: column;
+  align-self: center;
   align-items: center;
+  width: 100%;
+  max-width: 600px;
 }
 
 .carouselHeading {
@@ -60,31 +60,19 @@
 .carouselInner {
   display: flex;
   align-items: center;
+  justify-content: center;  /* Center the carousel */
   gap: 20px;
   width: 100%;
-  position: relative;
-  padding-left: 5px; /* Shift carousel a bit to the right */
 }
 
 .screenshot {
-  width: 80%;
+  width: 90%;
+  max-width: 400px;  /* Adjust to your preference */
   height: auto;
   object-fit: cover;
   border-radius: 10px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
-}
-
-.screenshot:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
-.carouselButtons {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin-top: 10px;
 }
 
 .carouselArrow {
@@ -107,6 +95,7 @@
   transform: scale(1.2);
   background-color: var(--secondary-color);
 }
+
 
 h1, h3, p {
   margin: 0.5em 0;

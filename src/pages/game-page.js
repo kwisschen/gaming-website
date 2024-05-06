@@ -112,8 +112,8 @@ const GamePage = ({ data }) => {
                     isModalOpen ? styles.open : ""
                   }`}
                 >
-                  <div class={styles.modalContent}>
-                    <span class={styles.close} onClick={closeModal}>
+                  <div className={styles.modalContent}>
+                    <span className={styles.close} onClick={closeModal}>
                       &times;
                     </span>
                     <img

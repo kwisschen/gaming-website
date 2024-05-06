@@ -1,3 +1,4 @@
+// src/pages/index.js
 import React, { useState, useRef, useEffect } from "react";
 import { Link, graphql, navigate } from "gatsby";
 import Layout from "../components/layout";
@@ -7,44 +8,102 @@ import * as styles from "../styles/index.module.css";
 const IndexPage = ({ data }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [nameError, setNameError] = useState(null);
+  const [emailError, setEmailError] = useState(null);
   const formRef = useRef(null);
   const [featuredGame, setFeaturedGame] = useState(null);
   const [languageUrl, setLanguageUrl] = useState(null);
   const [headerText, setHeaderText] = useState("Featured Game");
+  const [languageButton, setLanguageButton] = useState(null);
 
   useEffect(() => {
     let userLocale = navigator.language || navigator.languages[0];
-
-    // Handle specific cases for users using just "English" and "Chinese" as their Preferred Language in browser
-    if (userLocale === "en") {
-        userLocale = "en-US"; // mapping to "English (United States)"
-    } else if (userLocale === "zh") {
-        userLocale = "zh-CN"; // mapping to "Chinese (Simplified)"
-    }
-
-    // Filter games that support the user's preferred language
-    const localeGames = data.allGame.nodes.filter(game =>
+    const baseUserLocale = userLocale.split("-")[0];
+    
+    // Find exact match for locale
+    const exactMatchGames = data.allGame.nodes.filter(game =>
       game.supportedLanguages.some(lang => lang.locale === userLocale)
     );
-
-    // Randomly select one of the locale-supported games as the featured game
-    if (localeGames.length > 0) {
-      setLanguageUrl(`/language/${userLocale}/`);
-      setHeaderText("Featured game in YOUR language");
-      const randomIndex = Math.floor(Math.random() * localeGames.length);
-      setFeaturedGame(localeGames[randomIndex]);
+  
+    if (exactMatchGames.length > 0) {
+      const randomIndex = Math.floor(Math.random() * exactMatchGames.length);
+      const exactMatch = exactMatchGames[randomIndex];
+      const matchingLanguage = exactMatch.supportedLanguages.find(lang => lang.locale === userLocale);
+      const languageName = matchingLanguage ? matchingLanguage.name : "your language";
+  
+      setLanguageUrl(`/language/${matchingLanguage.locale}/`);
+      setHeaderText("Recommended for you:");
+      setFeaturedGame(exactMatch);
+      setLanguageButton(
+        <Link to={`/language/${matchingLanguage.locale}/`} className={styles.languageButton}>
+          {`All games in ${languageName}`}
+        </Link>
+      );
     } else {
-      // Randomly select one of all games as the featured game
-      const allGames = data.allGame.nodes;
-      const randomIndex = Math.floor(Math.random() * allGames.length);
-      setFeaturedGame(allGames[randomIndex]);
-      setLanguageUrl(null);
-      setHeaderText("Featured Game");
+      // Fallback to matching the base language (e.g., "pt" for "pt-BR")
+      const baseMatchGames = data.allGame.nodes.filter(game =>
+        game.supportedLanguages.some(lang => lang.locale.split("-")[0] === baseUserLocale)
+      );
+  
+      if (baseMatchGames.length > 0) {
+        const randomIndex = Math.floor(Math.random() * baseMatchGames.length);
+        const baseMatch = baseMatchGames[randomIndex];
+        const matchingLanguage = baseMatch.supportedLanguages.find(lang => lang.locale.split("-")[0] === baseUserLocale);
+        const languageName = matchingLanguage ? matchingLanguage.name : "your language";
+  
+        setLanguageUrl(`/language/${matchingLanguage.locale}/`);
+        setHeaderText("Recommended for you:");
+        setFeaturedGame(baseMatch);
+        setLanguageButton(
+          <Link to={`/language/${matchingLanguage.locale}/`} className={styles.languageButton}>
+            {`All games in ${languageName}`}
+          </Link>
+        );
+      } else {
+        // Randomly select one from all games as the featured game
+        const allGames = data.allGame.nodes;
+        const randomIndex = Math.floor(Math.random() * allGames.length);
+        setFeaturedGame(allGames[randomIndex]);
+        setLanguageUrl(null);
+        setHeaderText("Featured Game");
+        setLanguageButton(null);
+      }
     }
-  }, [data]);
+  }, [data, styles.languageButton]);  
+
+  // Front-end validation for form
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validateName = (name) => {
+    const nameRegex = /[\p{L}\p{M}]/u;
+    return nameRegex.test(name) && name.trim() !== "";
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    let valid = true;
+
+    if (!validateName(name)) {
+      setNameError("Please enter a valid name.");
+      valid = false;
+    } else {
+      setNameError(null);
+    }
+
+    if (!validateEmail(email)) {
+      setEmailError("Please enter a valid email address.");
+      valid = false;
+    } else {
+      setEmailError(null);
+    }
+
+    if (!valid) {
+      return;
+    }
+
     const formData = new FormData(formRef.current);
     const encData = new URLSearchParams(formData).toString();
 
@@ -72,6 +131,8 @@ const IndexPage = ({ data }) => {
   const handleReset = () => {
     setName("");
     setEmail("");
+    setNameError(null);
+    setEmailError(null);
     formRef.current.reset();
   };
 
@@ -79,7 +140,7 @@ const IndexPage = ({ data }) => {
     <Layout>
       <div className={styles.heroSection}>
         <h1>This is <span>RBG</span>.</h1>
-        <p>Best-quality games ranked by gamers, for gamers.</p>
+        <p>The best games ranked by gamers, for gamers.</p>
         <br />
         <Link to="/genres" className={styles.exploreButton}>Explore Games</Link>
       </div>
@@ -89,17 +150,12 @@ const IndexPage = ({ data }) => {
           <h2>{headerText}</h2>
           <div className={styles.cardContainer}>
             <Link to={`/game/${featuredGame.slug}/`} className={styles.gameCard}>
-              <img src={featuredGame.coverUrl || '../images/default.jpg'} alt={`Cover for ${featuredGame.name}`} className={styles.gameImage} />
+              <img src={featuredGame.coverUrl || "../images/default.jpg"} alt={`Cover for ${featuredGame.name}`} className={styles.gameImage} />
               <div className={styles.gameText}>{featuredGame.name}</div>
               <div className={styles.gameRating}>Rating: {featuredGame.rating ? featuredGame.rating.toFixed(1) : "N/A"}</div>
             </Link>
           </div>
-
-          {languageUrl && (
-            <Link to={languageUrl} className={styles.languageButton}>
-              Games in Your Language
-            </Link>
-          )}
+          {languageButton}
         </div>
       )}
 
@@ -121,14 +177,17 @@ const IndexPage = ({ data }) => {
               value={name}
               onChange={e => setName(e.target.value)}
             />
+            {nameError && <p className={styles.errorText}>{nameError}</p>}
           </label>
           <label>
             Email
             <input
               type="email"
               name="email"
+              value={email}
               onChange={e => setEmail(e.target.value)}
             />
+            {emailError && <p className={styles.errorText}>{emailError}</p>}
           </label>
           <div className={styles.formButtons}>
             <button type="submit">Send</button>
@@ -152,6 +211,7 @@ export const query = graphql`
         slug
         coverUrl
         supportedLanguages {
+          name
           locale
         }
       }

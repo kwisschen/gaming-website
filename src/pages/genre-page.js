@@ -1,5 +1,5 @@
 // src/pages/genre-page.js
-import React, { useLayoutEffect } from "react";
+import React from "react";
 import { graphql, Link } from "gatsby";
 import Layout from "../components/layout";
 import * as styles from '../styles/genre.module.css';
@@ -7,11 +7,6 @@ import defaultImage from '../images/default.jpg';
 
 const GenrePage = ({ data, pageContext }) => {
   const { allGame: { nodes: games } } = data;
-
-  // Attempt to make each visit scroll to top of page
-  useLayoutEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   const handleImageError = (event) => {
     if (event.target.src !== defaultImage) {

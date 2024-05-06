@@ -1,17 +1,13 @@
-// src/pages/language-page.js
-import React, { useLayoutEffect } from "react";
+import React from "react";
 import { graphql, Link } from "gatsby";
 import Layout from "../components/layout";
 import * as styles from "../styles/genre.module.css";
 import defaultImage from "../images/default.jpg";
 
 const LanguagePage = ({ data, pageContext }) => {
-  const { allGame: { nodes: games } } = data;
-
-  // Attempt to make each visit scroll to top of page
-  useLayoutEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  const {
+    allGame: { nodes: games },
+  } = data;
 
   const handleImageError = (event) => {
     if (event.target.src !== defaultImage) {
@@ -22,12 +18,16 @@ const LanguagePage = ({ data, pageContext }) => {
   return (
     <Layout>
       <div className={styles.headingContainer}>
-        <h1>Games Supporting Your Browser Language</h1>
+        <h1>{`Games available in ${pageContext.name}`}</h1>
         <h2>{`Locale: ${pageContext.locale}`}</h2>
       </div>
       <div className={styles.cardContainer}>
         {games.map((game) => (
-          <Link to={`/game/${game.slug}/`} key={game.id} className={styles.gameCard}>
+          <Link
+            to={`/game/${game.slug}/`}
+            key={game.id}
+            className={styles.gameCard}
+          >
             <img
               src={game.coverUrl || defaultImage}
               alt={`Cover for ${game.name}`}
@@ -35,7 +35,9 @@ const LanguagePage = ({ data, pageContext }) => {
               onError={handleImageError}
             />
             <div className={styles.gameText}>{game.name}</div>
-            <div className={styles.gameRating}>Rating: {game.rating ? game.rating.toFixed(1) : "N/A"}</div>
+            <div classname={styles.gameRating}>
+              Rating: {game.rating ? game.rating.toFixed(1) : "N/A"}
+            </div>
           </Link>
         ))}
       </div>

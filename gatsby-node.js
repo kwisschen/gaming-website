@@ -237,6 +237,7 @@ exports.createPages = async ({ graphql, actions }) => {
           id
           slug
           supportedLanguages {
+            name
             locale
           }
         }
@@ -257,25 +258,29 @@ exports.createPages = async ({ graphql, actions }) => {
     });
 
     // Create language pages
-    const uniqueLocales = new Set();
+    const uniqueLocales = new Map();
 
     gamesResult.data.allGame.nodes.forEach(game => {
       if (game.supportedLanguages) {
-        game.supportedLanguages.forEach(language => uniqueLocales.add(language.locale));
+        game.supportedLanguages.forEach(language => {
+          uniqueLocales.set(language.locale, language.name);
+        });
       }
     });
 
-    uniqueLocales.forEach(locale => {
+    uniqueLocales.forEach((name, locale) => {
       createPage({
         path: `/language/${locale}/`,
         component: path.resolve(`./src/pages/language-page.js`),
         context: {
-          locale: locale,
+          locale,
+          name,
         },
       });
     });
   }
 };
+
 
 exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions;

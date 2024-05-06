@@ -11,7 +11,7 @@ const Layout = ({ children }) => (
         <ul className={styles.navLinks}>
           <li className={styles.navLinkItem}><a href="/">Home</a></li>
           <li className={styles.navLinkItem}><a href="/about">About</a></li>
-          <li className={styles.navLinkItem}><a href="/genres">Games</a></li>
+          <li className={styles.navLinkItem}><a href="/genres">Genres</a></li>
         </ul>
       </nav>
     </header>
