@@ -36,7 +36,7 @@ const IndexPage = ({ data }) => {
       setFeaturedGame(exactMatch);
       setLanguageButton(
         <Link to={`/language/${matchingLanguage.locale}/`} className={styles.languageButton}>
-          {`All games in ${languageName}`}
+          {`All ${languageName} Games`}
         </Link>
       );
     } else {

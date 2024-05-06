@@ -211,6 +211,7 @@ exports.createPages = async ({ graphql, actions }) => {
         nodes {
           id
           slug
+          name
         }
       }
     }
@@ -224,6 +225,7 @@ exports.createPages = async ({ graphql, actions }) => {
         component: path.resolve(`./src/pages/genre-page.js`),
         context: {
           genreId: genre.id,
+          genreName: genre.name,
         },
       });
     });

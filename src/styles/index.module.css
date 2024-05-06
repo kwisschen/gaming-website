@@ -47,6 +47,7 @@
   background-position: right center;
   transform: translateY(-5px);
   box-shadow: 0 0 20px #ffdd00;
+  text-decoration: none;
 }
 
 .featuredGames {
@@ -55,6 +56,7 @@
   width: 100%;
   max-width: 80%;
   margin: 0 auto;
+  min-height: 200px;
 }
 
 .featuredGames h2 {
@@ -134,13 +136,14 @@
   display: inline-block;
   cursor: pointer;
   box-shadow: 0 0 20px #ffee77;
-  margin-top: 20px; /* Adjust the top margin as needed */
+  margin-top: 20px;
 }
 
 .languageButton:hover {
   background-position: right center;
   transform: translateY(-5px);
   box-shadow: 0 0 20px #ffdd00;
+  text-decoration: none;
 }
 
 .newsletterForm {
@@ -224,7 +227,7 @@
   .featuredGames,
   .newsletterForm {
     width: 100%;
-    padding: 10px; /* Adjust padding */
+    padding: 10px; /* Adjusted padding */
   }
 
   .gamesGrid {
@@ -238,7 +241,7 @@
 
   .newsletterForm input {
     width: 90%; /* Adjusted width */
-    max-width: 400px; /* Max width */
+    max-width: 400px;
     margin-left: 0; /* Align to the left */
   }
 

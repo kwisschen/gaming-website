@@ -5,12 +5,35 @@
     align-items: center;
     text-align: center;
     margin-bottom: 20px;
-  }
+    position: relative;
+}
+
+.backButton {
+    position: absolute;
+    top: 120px;
+    left: 1rem;
+    background-color: var(--secondary-color);
+    color: var(--text-light);
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.backButton:hover {
+    transform: translateY(-5px);
+    background-color: #1b7fcf;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    text-decoration: none;
+}
 
 .cardContainer {
+    margin-top: 3rem;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 30px;
+    gap: 35px;
     padding: 20px;
 }
 
@@ -56,4 +79,18 @@
     width: 100%; /* Ensure the image covers the card width */
     object-fit: cover; /* Ensure the image covers the defined height/width without distortion */
     object-position: center center; /* Center the image */
+}
+
+.emptyText {
+    margin-top: 6rem;
+}
+
+@media (max-width: 768px) {
+    .backButton {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    .backButton:hover {
+        transform: translateX(-50%); /* Keep the transform centered */
+    }
 }
