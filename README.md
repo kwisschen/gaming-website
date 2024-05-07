@@ -1,95 +1,104 @@
-# RankedByGamers - a gaming website developed in React using Gatsby
+# RankedByGamers
 
-Site URL: https://rankedbygamers.netlify.app/
+RankedByGamers is a Jamstack website built using Gatsby, a React framework. The site utilizes the Internet Game Database (IGDB) from Amazon's Twitch to showcase the top-rated games to date, filtered by genre and locale. The project demonstrates key concepts in Jamstack and continuous integration and continuous deployment (CI/CD), employs ESLint and Jest tests, and is hosted on Netlify.
 
+## Features
 
-# Content Below To Be Updated
+- **Homepage**: 
+1. A call-to-action button that links to the genres page.
+2. A "featured game" card that dynamically recommends a game based on the user's locale and links to the game's page.
+3. An "all games in your language" button that links to the games-in-language page using both base-matching (e.g., "en") and exact-matching (e.g., "en-US") of locale.
+4. A subscription form with front-end validation that allows users to subscribe to a newsletter via Netlify Forms.
+- **About Page**: Some background for the website.
+- **Genres Page**: A list of genres, each displayed with the number of top-rated games it contains.
+- **Genre Pages (for each genre)**: A list of games in a selected genre, sorted by ratings.
+- **Games-in-Language Pages (for each language)**: A list of games that support the user's preferred/browser language.
+- **Game Pages (for each game)**: Details for a selected game, including its cover, rating, platforms, supported languages, description, and screenshots.
 
-## Introduction
-Game Grapes is a Gatsby project built (almost) from scratch in CSCI E-114. Utilizing the Internet Game Database (IGDB) from Amazon's Twitch, Game Grapes provides information on the top 500 rated games of all time, regardless of whether they've aged into fine wine, as sorted by genre. This website runs ESLint and Jest tests, and implements CI/CD with GitHub Actions, Netlify Actions, as well as Netlify for deployment and hosting.
+## Hosted URL
 
-The homepage provides a Call-to-Action button which links to a genres page, the genres page contains a list of genre links each including the number of top 500 games falling under that genre and linking to individual genre pages, each individual genre page contains a list of game links beside which each rating is shown, and finally, clicking into each of these game links will yield an individual game page displaying the cover of that game, the rating, and a brief description of the game.
+Visit the website here: https://rankedbygamers.netlify.app
 
-The homepage also includes a "featured game" card that will eventually take the user directly to a random game page when clicked (not yet implemented).
+## Getting Started
 
-Lastly, at the bottom of the homepage is a newsletter subscription feature that leverages Netlify Forms, enabling users to sign up for our action-packed newsletters.
+### Prerequisites
 
-__Visit our website here:__ https://gamegrapes.netlify.app/
+Before running the project locally, ensure that you have the following installed:
 
+- Node.js (version 14 or above)
+- Gatsby CLI (globally installed)
 
+### Installation
 
-## How to run the website in 9 simple steps:
-
-### Step 1
+#### Step 1
 
 Open terminal and install Gatsby:
 
-__'npm install -g gatsby-cli'__
+- __'npm install -g gatsby-cli'__
 
 
-### Step 2
+#### Step 2
 
 Clone the remote repository for this project:
 
-__'git clone https://github.com/cscie114/assignment-5-cicd-kwisschen.git'__
+- __'git clone https://github.com/cscie114/assignment-5-cicd-kwisschen.git'__
 
 
-### Step 3
+#### Step 3
 
 Head into the project directory:
 
-__'cd [path to project directory]'__
+- __'cd [path to project directory]'__
 
 
-### Step 4
+#### Step 4
 
 Install project dependencies:
 
-__'npm install'__
+- __'npm install'__
 
 
-### Step 5
+#### Step 5
 
 Obtain a free Client ID & Access Token from IGDB (requires a Twitch account):
 
-[IGDB API Docs - Getting Started](https://api-docs.igdb.com/?javascript#getting-started)
+- [IGDB API Docs - Getting Started](https://api-docs.igdb.com/?javascript#getting-started)
 
 Note: you'll only need to complete the "Account Creation" and "Authentication" steps to obtain the access token.
 
 
-### Step 6
+#### Step 6
 
-Create a file named ".env" at the root directory of the project and type in:
+Create a file named ".env" at the root directory of the project and put in:
 
-__IGDB_CLIENT_ID = [your Client ID here]__
+- __IGDB_CLIENT_ID = [your Client ID here]__
 
-__IGDB_ACCESS_TOKEN = [your Access Token here]__
+- __IGDB_ACCESS_TOKEN = [your Access Token here]__
 
 Note: remember to add this file to your .gitignore file.
 
 
-### Step 7
+#### Step 7
 
-Run the application:
+Run the web application locally:
 
-__'gatsby develop'__
+1. __'gatsby develop'__
+
+2. Once complete, visit __http://localhost:8000/__
+
+Note: visit our live website [here](https://rankedbygamers.netlify.app) to enable successful form submission.
 
 
-### Step 8
+#### Step 8
 
 Test the application locally:
 
-__'npm run lint'__
+1.  __'npm run lint'__
 
-__'npm run test'__
+2.  __'npm run test'__
 
-Note: you'll need to set up the .env secrets from Steps 5 & 6 in GitHub for building/testing/deploying via GitHub Actions.
+3. Change your preferred language in browser Settings (e.g., using "Move to the top") and refresh our Homepage to see different links to different games-in-language pages.
 
+Note: If a generic language that does not specify a country is selected as your preferred language, e.g., "Portuguese", there may be no video games that support said generic language, as video game languages are pretty specific. In this case, the site is programmed to default to the language  of the first country in alphabetical order, e.g., "Portuguese (Brazil)" rather than "Portuguese (Portugal)".
 
-### Step 9
-
-Preview the website locally:
-
-__http://localhost:8000/__
-
-Note: signing up for our newsletter via Netlify Forms will require visiting our live website [here](https://gamegrapes.netlify.app/).
+On the other hand, if a preferred language that is truly not supported by any video game is selected, e.g., "Latin", the Homepage will hide the link to a language page and display the heading as "Featured Game" (chosen from all games rather than games in a specific language) instead of "Recommended For You:".

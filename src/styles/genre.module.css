@@ -10,14 +10,13 @@
 
 .backButton {
     position: absolute;
-    top: 120px;
+    top: 11.5rem;
     left: 1rem;
     background-color: var(--secondary-color);
-    color: var(--text-light);
+    color: #1f2533;
     padding: 10px 20px;
     border-radius: 5px;
     text-decoration: none;
-    font-weight: bold;
     transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
@@ -81,8 +80,9 @@
     object-position: center center; /* Center the image */
 }
 
-.emptyText {
+.emptyText h2 {
     margin-top: 6rem;
+    color: #1f2533;
 }
 
 @media (max-width: 768px) {

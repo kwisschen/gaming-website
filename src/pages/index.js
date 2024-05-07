@@ -12,7 +12,6 @@ const IndexPage = ({ data }) => {
   const [emailError, setEmailError] = useState(null);
   const formRef = useRef(null);
   const [featuredGame, setFeaturedGame] = useState(null);
-  const [languageUrl, setLanguageUrl] = useState(null);
   const [headerText, setHeaderText] = useState("Featured Game");
   const [languageButton, setLanguageButton] = useState(null);
 
@@ -31,12 +30,11 @@ const IndexPage = ({ data }) => {
       const matchingLanguage = exactMatch.supportedLanguages.find(lang => lang.locale === userLocale);
       const languageName = matchingLanguage ? matchingLanguage.name : "your language";
   
-      setLanguageUrl(`/language/${matchingLanguage.locale}/`);
       setHeaderText("Recommended for you:");
       setFeaturedGame(exactMatch);
       setLanguageButton(
         <Link to={`/language/${matchingLanguage.locale}/`} className={styles.languageButton}>
-          {`All ${languageName} Games`}
+          {`All Games in ${languageName}`}
         </Link>
       );
     } else {
@@ -51,12 +49,11 @@ const IndexPage = ({ data }) => {
         const matchingLanguage = baseMatch.supportedLanguages.find(lang => lang.locale.split("-")[0] === baseUserLocale);
         const languageName = matchingLanguage ? matchingLanguage.name : "your language";
   
-        setLanguageUrl(`/language/${matchingLanguage.locale}/`);
         setHeaderText("Recommended for you:");
         setFeaturedGame(baseMatch);
         setLanguageButton(
           <Link to={`/language/${matchingLanguage.locale}/`} className={styles.languageButton}>
-            {`All games in ${languageName}`}
+            {`All Games in ${languageName}`}
           </Link>
         );
       } else {
@@ -64,12 +61,11 @@ const IndexPage = ({ data }) => {
         const allGames = data.allGame.nodes;
         const randomIndex = Math.floor(Math.random() * allGames.length);
         setFeaturedGame(allGames[randomIndex]);
-        setLanguageUrl(null);
         setHeaderText("Featured Game");
         setLanguageButton(null);
       }
     }
-  }, [data, styles.languageButton]);  
+  }, [data, styles.languageButton]);
 
   // Front-end validation for form
   const validateEmail = (email) => {

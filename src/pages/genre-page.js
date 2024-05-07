@@ -22,6 +22,7 @@ const GenrePage = ({ data, pageContext }) => {
           Back to Genres
         </Link>
         <h1>{pageContext.genreName} Games</h1>
+        <h2>Sorted by Rating</h2>
       </div>
 
       {games.length > 0 ? (

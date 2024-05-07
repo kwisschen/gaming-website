@@ -54,7 +54,7 @@
 .carouselHeading {
   text-align: center;
   margin-bottom: 20px;
-  color: var(--secondary-color);
+  color: var(--text-dark);
 }
 
 .carouselInner {

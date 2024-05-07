@@ -1,7 +1,7 @@
 Features to consider adding:
-1. (Done) Featured game in local language on homepage
+1. (Done) Recommend a featured game on homepage
 2. (Done) Screenshots on game page
-3. (Done) Deeper dynamic data function (maybe detect locale of visitor)
+3. (Done) Deeper dynamic data functionalities (maybe detect locale of visitor and do stuff)
 4. (Done) Add front-end validation for form on index page
 5. Rating bar on game page
-6. Maybe have genre-page and language-page automatically scroll to top on load
+6. Maybe have genre-pages and language-pages always scroll to top

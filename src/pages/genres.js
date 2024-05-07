@@ -17,7 +17,7 @@ export default function GenresPage({ data }) {
   return (
     <Layout>
       <div className={styles.headingContainer}>
-        <h1>Top 1000 Games of All Time</h1>
+        <h1>Today&apos;s Highest-Rated Games</h1>
         <h2>Sorted by Genre</h2>
       </div>
       <div className={styles.cardContainer}>

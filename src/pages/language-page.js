@@ -1,3 +1,4 @@
+// src/pages/language-page.js
 import React from "react";
 import { graphql, Link } from "gatsby";
 import Layout from "../components/layout";
@@ -19,7 +20,7 @@ const LanguagePage = ({ data, pageContext }) => {
     <Layout>
       <div className={styles.headingContainer}>
         <h1>{`Games available in ${pageContext.name}`}</h1>
-        <h2>{`Locale: ${pageContext.locale}`}</h2>
+        <h2>{`Your locale: ${pageContext.locale}`}</h2>
       </div>
       <div className={styles.cardContainer}>
         {games.map((game) => (
@@ -35,7 +36,7 @@ const LanguagePage = ({ data, pageContext }) => {
               onError={handleImageError}
             />
             <div className={styles.gameText}>{game.name}</div>
-            <div classname={styles.gameRating}>
+            <div className={styles.gameRating}>
               Rating: {game.rating ? game.rating.toFixed(1) : "N/A"}
             </div>
           </Link>
