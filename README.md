@@ -41,7 +41,7 @@ Open terminal and install Gatsby:
 
 Clone the remote repository for this project:
 
-- __'git clone https://github.com/cscie114/assignment-5-cicd-kwisschen.git'__
+- __'git clone https://github.com/cscie114/csci-e-114-final-project-kwisschen'__
 
 
 #### Step 3
