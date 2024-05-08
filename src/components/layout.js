@@ -17,7 +17,7 @@ const Layout = ({ children }) => (
     </header>
     <main className={styles.content}>{children}</main>
     <footer className={styles.siteFooter}>
-      Copyright © {new Date().getFullYear()} Christopher Chen in CSCI E-114
+      Copyright © {new Date().getFullYear()} Christopher Chen
     </footer>
   </div>
 );

@@ -10,10 +10,10 @@
 
 .backButton {
     position: absolute;
-    top: 11.5rem;
+    top: 11rem;
     left: 1rem;
     background-color: var(--secondary-color);
-    color: #1f2533;
+    color: var(--text-light);
     padding: 10px 20px;
     border-radius: 5px;
     text-decoration: none;

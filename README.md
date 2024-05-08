@@ -7,7 +7,7 @@ RankedByGamers is a Jamstack website built using Gatsby, a React framework. The 
 - **Homepage**: 
 1. A call-to-action button that links to the genres page.
 2. A "featured game" card that dynamically recommends a game based on the user's locale and links to the game's page.
-3. An "all games in your language" button that links to the games-in-language page using both base-matching (e.g., "en") and exact-matching (e.g., "en-US") of locale.
+3. An "all games in your language" button that links user locale to a games-in-language page using both base-matching (e.g., "en") and exact-matching (e.g., "en-US") of locale.
 4. A subscription form with front-end validation that allows users to subscribe to a newsletter via Netlify Forms.
 - **About Page**: Some background for the website.
 - **Genres Page**: A list of genres, each displayed with the number of top-rated games it contains.
@@ -64,18 +64,20 @@ Obtain a free Client ID & Access Token from IGDB (requires a Twitch account):
 
 - [IGDB API Docs - Getting Started](https://api-docs.igdb.com/?javascript#getting-started)
 
-Note: you'll only need to complete the "Account Creation" and "Authentication" steps to obtain the access token.
+[!TIP]
+You'll only need to complete the "Account Creation" and "Authentication" steps to obtain the access token.
 
 
 #### Step 6
 
-Create a file named ".env" at the root directory of the project and put in:
+Create a file named ".env" in the root directory of the project and put in:
 
 - __IGDB_CLIENT_ID = [your Client ID here]__
 
 - __IGDB_ACCESS_TOKEN = [your Access Token here]__
 
-Note: remember to add this file to your .gitignore file.
+[!IMPORTANT] 
+Remember to add this .env file to your .gitignore file.
 
 
 #### Step 7
@@ -86,7 +88,8 @@ Run the web application locally:
 
 2. Once complete, visit __http://localhost:8000/__
 
-Note: visit our live website [here](https://rankedbygamers.netlify.app) to enable successful form submission.
+[!NOTE]
+Visit our live website [here](https://rankedbygamers.netlify.app) to enable successful form submission.
 
 
 #### Step 8
@@ -99,6 +102,8 @@ Test the application locally:
 
 3. Change your preferred language in browser Settings (e.g., using "Move to the top") and refresh our Homepage to see different links to different games-in-language pages.
 
-Note: If a generic language that does not specify a country is selected as your preferred language, e.g., "Portuguese", there may be no video games that support said generic language, as video game languages are pretty specific. In this case, the site is programmed to default to the language  of the first country in alphabetical order, e.g., "Portuguese (Brazil)" rather than "Portuguese (Portugal)".
+[!NOTE]
+If a generic language that does not specify a country is selected as your preferred language, e.g., "Portuguese", there may be no video games that support said generic language, as video game languages are pretty specific. In this case, the site is programmed to default to the language  of the first country in alphabetical order, e.g., "Portuguese (Brazil)" rather than "Portuguese (Portugal)". On the other hand, if a preferred language that is truly not supported by any video game is selected, e.g., "Latin", the Homepage will hide the link to a language page and display the heading as "Featured Game" (chosen from all games rather than games in a specific language) instead of "Recommended For You:".
 
-On the other hand, if a preferred language that is truly not supported by any video game is selected, e.g., "Latin", the Homepage will hide the link to a language page and display the heading as "Featured Game" (chosen from all games rather than games in a specific language) instead of "Recommended For You:".
+## Acknowledgements
+Special thanks to the CSCI E-114 course team at Harvard University for the guidance and support.
