@@ -40,7 +40,7 @@
     position: absolute;
     top: 100%; /* Start directly at the bottom of the search bar */
     left: 0;
-    width: 100%;
+    width: 90%;
     background: var(--accent-color);
     list-style: none;
     padding: 0;
@@ -61,8 +61,13 @@
 }
 
 .noMatches {
+    position: absolute;
+    left: 0;
+    top: 100%; /* Position it just below the search bar */
+    background: var(--accent-color);
     padding: 8px;
     color: #ff0000;
+    width: 85%;
 }
 
 @media (max-width: 768px) {
