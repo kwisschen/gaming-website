@@ -3,8 +3,8 @@ Features to consider adding:
 2. (Done) Screenshots on game page
 3. (Done) Deeper dynamic data functionalities (maybe detect locale of visitor and do stuff)
 4. (Done) Add front-end validation for form on index page
+5. (Done) Add a search bar on the top-right of homepage
 
 Future endeavors:
-5. Add a search bar on the top-right of homepage
 6. Rating bar on game page
-7. Find a way to have genre-pages and language-pages always scroll to top first
+7. Find a way to have genre-pages and language-pages always scroll to top first in Gatsby

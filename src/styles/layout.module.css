@@ -38,7 +38,7 @@ main {
 
 .header {
     display: flex;
-    justify-content: flex-start; /* Align items to the start */
+    justify-content: space-between;
     align-items: center;
     padding: 1rem 0;
     background-color: var(--primary-color);
@@ -49,6 +49,13 @@ main {
     top: 0;
     z-index: 1000;
     animation: slideDown 1s ease-out forwards;
+}
+
+.headerContent {
+    display: flex;
+    align-items: center;
+    justify-content: start; /* Align items from start */
+    width: 100%; /* Ensures the header content takes full width */
 }
 
 @keyframes slideDown {
@@ -180,17 +187,47 @@ button:hover {
     transform: scale(1.05);
 }
 
-/* Media Query for Mobile */
+/* Media Query for Tablets and Below */
 @media (max-width: 768px) {
     .header {
-        justify-content: center;
-    }
-
-    .navLinks {
-        display: none;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        height: auto;
+        justify-content: center; /* Center content vertically */
     }
 
     .siteTitle {
-        font-size: 2rem;
+        margin-bottom: 10px; /* Adjust space below the title */
+        font-size: 1.8rem; /* Adjusted font size for smaller screens */
+        text-align: center; /* Ensure title is centered */
+    }
+
+    .headerContent {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .navLinks {
+        order: 2; /* Keep nav links above the search bar */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        margin-bottom: 2rem;
+    }
+
+    .navLinkItem {
+        margin: 5px 0; /* Space between each link */
+        text-align: center; /* Center align links */
+    }
+
+    .searchBarContainer {
+        order: 3; /* Search bar below nav links */
+        width: 100%; /* Stretch across the width */
     }
 }
