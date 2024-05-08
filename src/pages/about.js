@@ -18,7 +18,7 @@ const AboutPage = () => {
             className={styles.featuredImage}
           />
         </Link>
-        <h1>Our Story</h1>
+        <h1>Our Story</h1><br/>
         <p>
           At RankedByGamers, we are passionate about gaming and strive to
           provide you with the latest information on the highest-rated games.
