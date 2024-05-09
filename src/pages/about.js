@@ -25,7 +25,7 @@ const AboutPage = () => {
         </p>
         <p>
           Our mission is to help you discover top-rated games that support your preferred language,
-          whether you are just getting started or a seasoned gamer.
+          whether you are just getting started or already a seasoned gamer.
         </p>
         <p>
           Explore our website to find ratings, screenshots, and much more for games that are available in your language.
