@@ -9,9 +9,6 @@
 }
 
 .backButton {
-    position: absolute;
-    top: 11rem;
-    left: 1rem;
     background-color: var(--secondary-color);
     color: var(--text-light);
     padding: 10px 20px;
@@ -29,7 +26,7 @@
 }
 
 .cardContainer {
-    margin-top: 3rem;
+    margin-top: 5.5rem;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 35px;
@@ -87,10 +84,9 @@
 
 @media (max-width: 768px) {
     .backButton {
-        left: 50%;
-        transform: translateX(-50%);
+        margin-top: 1rem;
     }
     .backButton:hover {
-        transform: translateX(-50%); /* Keep the transform centered */
+        transform: translateY(-5px); /* Keep the transform centered */
     }
 }

@@ -4,10 +4,9 @@
 module.exports = {
   siteMetadata: {
     title: `RankedByGamers`,
-    description: `Final Project in CSCI E-114`,
-    course: `CSCI E-114`,
+    description: `Game information and recommending website with games being filtered and sorted by rating, genre, and locale`,
     author: `Christopher Chen`,
-    siteUrl: `http://localhost:8000`,
+    siteUrl: `https://rankedbygamers.netlify.app`,
   },
   plugins: [
     `gatsby-plugin-image`,

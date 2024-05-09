@@ -1,3 +1,4 @@
+// src/pages/genre-page.js
 import React from "react";
 import { graphql, Link } from "gatsby";
 import Layout from "../components/layout";
@@ -18,11 +19,11 @@ const GenrePage = ({ data, pageContext }) => {
   return (
     <Layout>
       <div className={styles.headingContainer}>
+        <h1>{pageContext.genreName} Games</h1>
+        <h2>Sorted by Rating</h2>
         <Link to="/genres" className={styles.backButton}>
           Back to Genres
         </Link>
-        <h1>{pageContext.genreName} Games</h1>
-        <h2>Sorted by Rating</h2>
       </div>
 
       {games.length > 0 ? (
