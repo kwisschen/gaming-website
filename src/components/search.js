@@ -21,7 +21,7 @@ const SearchBar = () => {
   `);
 
   useEffect(() => {
-    if (input.length >= 3) {
+    if (input.length >= 2) {
       const searchInput = input.toLowerCase();
       const filteredGames = data.allGame.nodes.filter((game) =>
         game.name.toLowerCase().includes(searchInput)

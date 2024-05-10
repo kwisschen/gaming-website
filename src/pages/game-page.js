@@ -1,5 +1,5 @@
 // src/pages/game-page.js
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { graphql } from "gatsby";
 import Layout from "../components/layout";
 import * as styles from "../styles/game.module.css";
@@ -8,6 +8,7 @@ const GamePage = ({ data }) => {
   const { game } = data;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isModalOpen, setModalOpen] = useState(false);
+  const modalContentRef = useRef(null); // Reference to the modal content for detecting outside clicks
 
   const nextSlide = () => {
     setCurrentIndex((currentIndex + 1) % game.screenshots.length);
@@ -27,6 +28,22 @@ const GamePage = ({ data }) => {
     setModalOpen(false);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        modalContentRef.current &&
+        !modalContentRef.current.contains(event.target)
+      ) {
+        closeModal();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <Layout>
       <div className={styles.gameContainer}>
@@ -44,15 +61,15 @@ const GamePage = ({ data }) => {
               </div>
               <div className={styles.gameDetails}>
                 <h1>{game.name}</h1>
-                <h3>Rating:</h3>
+                <h2>Rating:</h2>
                 <p>{game.rating ? game.rating.toFixed(1) : "N/A"}</p>
-                <h3>Release Date:</h3>
+                <h2>Release Date:</h2>
                 <p>
                   {game.firstReleaseDate
                     ? new Date(game.firstReleaseDate).toLocaleDateString()
                     : "Unknown"}
                 </p>
-                <h3>Platforms:</h3>
+                <h2>Platforms:</h2>
                 {game.platforms && game.platforms.length > 0 ? (
                   <ul>
                     {game.platforms.map((platform) => (
@@ -62,7 +79,7 @@ const GamePage = ({ data }) => {
                 ) : (
                   <p>Not available</p>
                 )}
-                <h3>Supported Languages:</h3>
+                <h2>Supported Languages:</h2>
                 <p>
                   {game.supportedLanguages && game.supportedLanguages.length > 0
                     ? game.supportedLanguages
@@ -70,7 +87,7 @@ const GamePage = ({ data }) => {
                         .join(", ")
                     : "None specified"}
                 </p>
-                <h3>Description:</h3>
+                <h2>Description:</h2>
                 <p>{game.summary || "No description available."}</p>
                 <p>
                   More information at:{" "}
@@ -112,7 +129,7 @@ const GamePage = ({ data }) => {
                     isModalOpen ? styles.open : ""
                   }`}
                 >
-                  <div className={styles.modalContent}>
+                  <div className={styles.modalContent} ref={modalContentRef}>
                     <span className={styles.close} onClick={closeModal}>
                       &times;
                     </span>

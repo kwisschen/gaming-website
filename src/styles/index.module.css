@@ -1,7 +1,7 @@
 /* index.module.css */
 .heroSection {
   text-align: center;
-  padding: 60px 20px;
+  padding: 4rem 1rem;
   background-color: #1f2533;
   color: #ffffff;
   border-radius: 10px;
@@ -150,7 +150,7 @@
 
 .newsletterForm {
   text-align: center;
-  padding: 20px;
+  padding: 4rem 1rem;
   margin: 0 auto;
   margin-top: 40px;
   margin-bottom: 20px;
@@ -207,15 +207,15 @@
   margin: 10px;
   padding: 10px 20px;
   font-size: 1rem;
-  color: #123456;
-  background-color: #f39c12;
+  background-color: var(--secondary-color);
+  color: var(--text-light);
   border: none;
   border-radius: 5px;
   transition: background-color 0.3s;
 }
 
 .formButtons button:hover {
-  background-color: #e67e22;
+  background-color: var(--text-dark);
 }
 
 .errorText {

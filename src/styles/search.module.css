@@ -40,7 +40,7 @@
     position: absolute;
     top: 100%; /* Start directly at the bottom of the search bar */
     left: 0;
-    width: 90%;
+    width: 250px;
     background: var(--accent-color);
     list-style: none;
     padding: 0;
@@ -65,8 +65,8 @@
     left: 0;
     top: 100%; /* Position it just below the search bar */
     background: var(--accent-color);
-    padding: 8px;
     color: #ff0000;
+    padding: 8px;
     width: 85%;
 }
 
@@ -90,5 +90,13 @@
         width: 15%; /* Needs to add up to 100% with searchInput */
         padding: 8px;
         box-sizing: border-box;
+    }
+
+    .suggestionsList {
+        width: 85%;
+    }
+
+    .noMatches {
+        width: 85%;
     }
 }

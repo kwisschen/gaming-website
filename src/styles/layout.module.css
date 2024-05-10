@@ -6,8 +6,8 @@
     --secondary-color: #2a9df4; /* Vibrant blue */
     --accent-color: #f1faee; /* Light cream */
     --text-dark: #1b7fcf; /* Vibrant blue */
-    --text-light: #f1faee; /* Light cream */
-    --background-color: #e69554; /* Soft orange */
+    --text-light: #fff; /* White */
+    --background-color: #f4a261; /* Soft orange */
     --header-color: #f4a261; /* Soft orange */
     --header-height: 80px; /* Header height for consistency */
 }
@@ -75,6 +75,9 @@ main {
     animation: fadeIn 1s ease-out;
     margin: auto 2rem;
     text-decoration: none;
+    display: flex;
+    align-items: center; /* Vertically center contents */
+    justify-content: center; /* Horizontally center contents */
 }
 
 @keyframes fadeIn {
@@ -154,6 +157,7 @@ main {
 
 h1, h2, h3, h4, h5, h6 {
     color: var(--text-dark);
+    text-shadow: 0.5px 0.5px 0.5px #505050;
 }
 
 main h1 {
@@ -183,7 +187,7 @@ button {
 }
 
 button:hover {
-    background-color: var(--accent-color);
+    background-color: var(--text-dark);
     transform: scale(1.05);
 }
 

@@ -28,9 +28,9 @@ const AboutPage = () => {
           whether you are just getting started or already a seasoned gamer.
         </p>
         <p>
-          Explore our website to find ratings, screenshots, and much more for games that are available in your language.
+          Explore our site to find ratings, screenshots, and much more for games that are available in your language.
         </p>
-        <p>Welcome to your ultimate guide to the gaming world. Happy gaming, gamer.</p>
+        <p>Welcome to your ultimate guide to the gaming world, and happy gaming, gamer.</p>
       </div>
     </Layout>
   );
