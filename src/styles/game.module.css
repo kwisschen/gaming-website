@@ -30,7 +30,7 @@
 .gameCover {
   width: 100%;
   height: auto;
-  margin-top: 3rem;
+  margin-top: 2rem;
   object-fit: cover;
   border-radius: 10px;
   display: block; /* Ensures the image takes full width of the parent */
@@ -164,7 +164,7 @@ a:hover {
   .gameHeader {
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 20px;
     justify-content: center;
   }
 

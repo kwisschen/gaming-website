@@ -29,6 +29,10 @@ const GamePage = ({ data }) => {
   };
 
   useEffect(() => {
+    console.log("Developers Data:", game.developers);
+  }, [game.developers]);
+  
+  useEffect(() => {
     const handleClickOutside = (event) => {
       if (
         modalContentRef.current &&
@@ -63,6 +67,18 @@ const GamePage = ({ data }) => {
                 <h1>{game.name}</h1>
                 <h2>Rating:</h2>
                 <p>{game.rating ? game.rating.toFixed(1) : "N/A"}</p>
+
+                <h2>Developers:</h2>
+                {game.developers && game.developers.length > 0 ? (
+                  <ul>
+                    {game.developers.map((developer) => (
+                      <li key={developer}>{developer}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>Not available</p>
+                )}
+                
                 <h2>Release Date:</h2>
                 <p>
                   {game.firstReleaseDate
@@ -167,6 +183,7 @@ export const query = graphql`
         name
         locale
       }
+      developers
     }
   }
 `;
