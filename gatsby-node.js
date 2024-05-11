@@ -18,12 +18,7 @@ function convertImageUrl(url, size = "t_720p") {
 }
 
 // Fetch data from IGDB with retry mechanism
-async function fetchIGDBDataWithRetry(
-  endpoint,
-  query,
-  retryCount = 2,
-  retryDelay = 1000
-) {
+async function fetchIGDBDataWithRetry(endpoint, query, retryCount = 5, retryDelay = 1000) {
   let response;
   for (let attempt = 0; attempt < retryCount; attempt++) {
     response = await fetch(`${IGDB_API_URL}/${endpoint}`, {
@@ -34,20 +29,17 @@ async function fetchIGDBDataWithRetry(
     if (response.ok) {
       return await response.json();
     }
-    console.error(
-      `Attempt ${attempt + 1}: Failed with status ${response.status}`
-    );
-    if (response.status !== 429) {
-      // Not a rate limit error
+    console.error(`Attempt ${attempt + 1}: Failed with status ${response.status}`);
+    if (response.status === 429) {
+      // Exponentially increase delay
+      await new Promise(resolve => setTimeout(resolve, retryDelay * Math.pow(2, attempt)));
+    } else {
       const message = await response.text();
       console.error(`Error response body: ${message}`);
-      throw new Error(
-        `Failed to fetch from IGDB: ${response.status} ${response.statusText} - ${message}`
-      );
+      throw new Error(`Failed to fetch from IGDB: ${response.status} ${response.statusText} - ${message}`);
     }
-    await new Promise((resolve) => setTimeout(resolve, retryDelay));
   }
-  throw new Error("Failed after multiple retries.");
+  throw new Error('Failed after multiple retries.');
 }
 
 // Fetch data in chunks
@@ -119,8 +111,6 @@ async function fetchInvolvedCompanies(companyIds) {
   const query = `fields company,developer; where id = (${companyIds.join(
     ","
   )});`;
-
-  console.log("Querying involved_companies with:", query); // Log the full query
 
   try {
     const data = await fetchDataInChunks(

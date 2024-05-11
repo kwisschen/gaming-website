@@ -27,10 +27,6 @@ const GamePage = ({ data }) => {
   const closeModal = () => {
     setModalOpen(false);
   };
-
-  useEffect(() => {
-    console.log("Developers Data:", game.developers);
-  }, [game.developers]);
   
   useEffect(() => {
     const handleClickOutside = (event) => {
