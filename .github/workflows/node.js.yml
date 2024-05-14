@@ -5,16 +5,16 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  schedule:
+    # cron job that runs at 00:00 UTC on the first day of every month
+    - cron: '0 0 1 * *'
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-      - name: Deploy RankedByGamers to Netlify
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: latest
           cache: 'npm'
@@ -35,7 +35,6 @@ jobs:
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          IGDB_CLIENT_ID: ${{ secrets.IGDB_CLIENT_ID }}
+          IGDB_CLIENT_SECRET: ${{ secrets.IGDB_CLIENT_SECRET }}
         timeout-minutes: 1
-    env:
-      IGDB_CLIENT_ID: ${{ secrets.IGDB_CLIENT_ID }}
-      IGDB_ACCESS_TOKEN: ${{ secrets.IGDB_ACCESS_TOKEN }}

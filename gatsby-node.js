@@ -1,29 +1,40 @@
-// gatsby-node.js
+//gatsby-node.js
 const fetch = require("node-fetch");
 require("dotenv").config();
 const path = require("path");
 
 const IGDB_API_URL = "https://api.igdb.com/v4";
-const HEADERS = {
-  Accept: "application/json",
-  "Client-ID": process.env.IGDB_CLIENT_ID,
-  Authorization: `Bearer ${process.env.IGDB_ACCESS_TOKEN}`,
-};
 
-// Convert IGDB image URLs to specified resolution
-function convertImageUrl(url, size = "t_720p") {
-  if (!url) return "";
-  const baseUrl = url.startsWith("http") ? "" : "https:";
-  return `${baseUrl}${url.replace("t_thumb", size)}`;
+// Refresh the access token using Client ID and Client Secret
+async function refreshToken() {
+  const response = await fetch('https://id.twitch.tv/oauth2/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: `client_id=${process.env.IGDB_CLIENT_ID}&client_secret=${process.env.IGDB_CLIENT_SECRET}&grant_type=client_credentials`
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to refresh token: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data.access_token; // Return new access token
 }
 
 // Fetch data from IGDB with retry mechanism
 async function fetchIGDBDataWithRetry(endpoint, query, retryCount = 5, retryDelay = 1000) {
+  const accessToken = await refreshToken(); // Refresh and get new token at the start of each build
   let response;
   for (let attempt = 0; attempt < retryCount; attempt++) {
     response = await fetch(`${IGDB_API_URL}/${endpoint}`, {
       method: "POST",
-      headers: HEADERS,
+      headers: {
+        Accept: "application/json",
+        "Client-ID": process.env.IGDB_CLIENT_ID,
+        Authorization: `Bearer ${accessToken}`, // Use the refreshed token
+      },
       body: query,
     });
     if (response.ok) {
@@ -139,6 +150,13 @@ async function fetchCompanies(companyIds) {
       ),
     companyIds
   );
+}
+
+// Convert IGDB image URLs to specified resolution
+function convertImageUrl(url, size = "t_720p") {
+  if (!url) return "";
+  const baseUrl = url.startsWith("http") ? "" : "https:";
+  return `${baseUrl}${url.replace("t_thumb", size)}`;
 }
 
 exports.sourceNodes = async ({
