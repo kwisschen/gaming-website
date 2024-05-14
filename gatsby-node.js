@@ -23,7 +23,7 @@ async function refreshToken() {
     });
 
     if (!response.ok) {
-      const errorBody = await response.text(); // More detailed error message
+      const errorBody = await response.text();
       throw new Error(`Failed to refresh token: ${response.statusText}, Details: ${errorBody}`);
     }
 
@@ -31,7 +31,7 @@ async function refreshToken() {
     return data.access_token; // Return new access token
   } catch (error) {
     console.error(`Error refreshing token: ${error.message}`);
-    throw error; // Rethrow to handle it upstream
+    throw error; // Rethrow to maybe handle it upstream
   }
 }
 
