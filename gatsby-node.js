@@ -8,18 +8,14 @@ const IGDB_API_URL = "https://api.igdb.com/v4";
 // Refresh the access token using Client ID and Client Secret
 async function refreshToken() {
   try {
-    const url = 'https://id.twitch.tv/oauth2/token';
-    const params = new URLSearchParams();
-    params.append('client_id', process.env.IGDB_CLIENT_ID);
-    params.append('client_secret', process.env.IGDB_CLIENT_SECRET);
-    params.append('grant_type', 'client_credentials');
-
-    const response = await fetch(url, {
+    const response = await fetch('https://id.twitch.tv/oauth2/token', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: params
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        'client_id': process.env.IGDB_CLIENT_ID,
+        'client_secret': process.env.IGDB_CLIENT_SECRET,
+        'grant_type': 'client_credentials'
+      })
     });
 
     if (!response.ok) {
@@ -28,10 +24,10 @@ async function refreshToken() {
     }
 
     const data = await response.json();
-    return data.access_token; // Return new access token
+    return data.access_token;
   } catch (error) {
     console.error(`Error refreshing token: ${error.message}`);
-    throw error; // Rethrow to maybe handle it upstream
+    throw error;
   }
 }
 
@@ -488,5 +484,5 @@ exports.createSchemaCustomization = ({ actions }) => {
 };
 
 if (process.env.NODE_ENV === "test") {
-  exports.fetchIGDBData = fetchIGDBDataWithRetry;
+  exports.fetchIGDBDataWithRetry = fetchIGDBDataWithRetry;
 }
