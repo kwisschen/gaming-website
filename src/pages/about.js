@@ -24,7 +24,7 @@ const AboutPage = () => {
           provide you with the latest information on the highest-rated games.
         </p>
         <p>
-          Our mission is to help you discover top-rated games that support your preferred language,
+          Our mission is to help you discover top-rate games that support your preferred genre or language,
           whether you are just getting started or already a seasoned gamer.
         </p>
         <p>
