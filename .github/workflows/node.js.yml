@@ -12,21 +12,37 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:    # Define environment variables here to make them available to all steps
+    env:
       IGDB_CLIENT_ID: ${{ secrets.IGDB_CLIENT_ID }}
       IGDB_CLIENT_SECRET: ${{ secrets.IGDB_CLIENT_SECRET }}
       NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
       NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: latest
           cache: 'npm'
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run build --if-present
-      - run: npm test
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Clear Gatsby Cache
+        run: gatsby clean  # Add this step to clear Gatsby's cache
+
+      - name: Lint code
+        run: npm run lint
+
+      - name: Build the project
+        run: npm run build --if-present
+
+      - name: Run tests
+        run: npm test
+
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v3.0
         with:
@@ -37,4 +53,4 @@ jobs:
           enable-pull-request-comment: false
           enable-commit-comment: true
           overwrites-pull-request-comment: true
-        timeout-minutes: 1
+        timeout-minutes: 5  # Increase timeout to allow for successful deployments
