@@ -32,13 +32,13 @@ jobs:
         run: npm ci
 
       - name: Clear Gatsby Cache
-        run: gatsby clean  # Add this step to clear Gatsby's cache
+        run: npx gatsby clean  # Use npx to run local Gatsby commands
 
       - name: Lint code
         run: npm run lint
 
       - name: Build the project
-        run: npm run build --if-present
+        run: npx gatsby build  # Use npx to run local Gatsby commands
 
       - name: Run tests
         run: npm test
