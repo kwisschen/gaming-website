@@ -25,7 +25,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.17.0'  # Specify the latest stable LTS version
+          node-version: 'lts/*'  # Automatically use the latest stable LTS version
           cache: 'npm'
 
       - name: Install dependencies
